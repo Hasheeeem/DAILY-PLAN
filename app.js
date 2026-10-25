@@ -358,6 +358,7 @@ function initNavTabs() {
       const target = document.getElementById(btn.dataset.tab);
       if (target) {
         target.classList.add("active");
+        btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
@@ -395,6 +396,9 @@ function initDayTabs(todayName) {
 
     if (btn.dataset.day === currentSelectedDay) {
       btn.classList.add("active");
+      setTimeout(() => {
+        btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }, 200);
     } else {
       btn.classList.remove("active");
     }
@@ -402,6 +406,7 @@ function initDayTabs(todayName) {
     btn.addEventListener("click", () => {
       dayBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
       currentSelectedDay = btn.dataset.day;
       renderTimeline(currentSelectedDay);
     });
