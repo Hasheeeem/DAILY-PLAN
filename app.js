@@ -381,20 +381,11 @@ function switchTab(tabId) {
 
 // --- Sticky Navigation Bar & Plan Actions ---
 function initNavTabs() {
-  const currentDisplay = document.getElementById("currentSectionDisplay");
-  if (currentDisplay) {
-    currentDisplay.addEventListener("click", () => {
-      const toggle = document.getElementById("sidebarToggleBtn");
-      if (toggle) toggle.click();
-    });
-  }
-
-  const stickyJumpBtn = document.getElementById("stickyJumpActiveBtn");
-  if (stickyJumpBtn) {
-    stickyJumpBtn.addEventListener("click", () => {
+  const brandBtn = document.getElementById("brandHomeBtn");
+  if (brandBtn) {
+    brandBtn.addEventListener("click", () => {
       switchTab("tab-daily");
-      const jumpBtn = document.getElementById("jumpToCurrentBlockBtn");
-      if (jumpBtn) jumpBtn.click();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
 
@@ -419,13 +410,12 @@ function initNavTabs() {
   }
 }
 
-// --- Off-Canvas Sections Sidebar Drawer ---
+// --- Off-Canvas Modern Sidebar Drawer (Apple-Inspired & Clean) ---
 function initSidebar(todayName) {
-  const sidebar = document.getElementById("sectionsSidebar");
+  const sidebar = document.getElementById("modernSidebar");
   const backdrop = document.getElementById("sidebarBackdrop");
-  const toggleBtn = document.getElementById("sidebarToggleBtn");
+  const menuToggle = document.getElementById("menuToggleBtn");
   const closeBtn = document.getElementById("sidebarCloseBtn");
-  const floatingBtn = document.getElementById("floatingSidebarBtn");
   const jumpActiveBtn = document.getElementById("sidebarJumpActiveBtn");
 
   if (!sidebar || !backdrop) return;
@@ -433,17 +423,27 @@ function initSidebar(todayName) {
   function openSidebar() {
     sidebar.classList.add("open");
     backdrop.classList.add("active");
+    if (menuToggle) menuToggle.classList.add("is-active");
     document.body.style.overflow = "hidden"; // Prevent background scroll
   }
 
   function closeSidebar() {
     sidebar.classList.remove("open");
     backdrop.classList.remove("active");
+    if (menuToggle) menuToggle.classList.remove("is-active");
     document.body.style.overflow = "";
   }
 
-  if (toggleBtn) toggleBtn.addEventListener("click", openSidebar);
-  if (floatingBtn) floatingBtn.addEventListener("click", openSidebar);
+  if (menuToggle) {
+    menuToggle.addEventListener("click", () => {
+      if (sidebar.classList.contains("open")) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+  }
+
   if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
   if (backdrop) backdrop.addEventListener("click", closeSidebar);
 
@@ -457,33 +457,16 @@ function initSidebar(todayName) {
   document.querySelectorAll(".sidebar-nav-item").forEach(item => {
     item.addEventListener("click", () => {
       const tabKey = item.dataset.tab;
-      switchTab(tabKey);
-      closeSidebar();
-    });
-  });
-
-  // Quick Day selector in sidebar
-  const sidebarDayPills = document.querySelectorAll(".sidebar-day-pill");
-  sidebarDayPills.forEach(pill => {
-    if (pill.dataset.day === currentSelectedDay) {
-      pill.classList.add("active");
-    }
-    pill.addEventListener("click", () => {
-      sidebarDayPills.forEach(p => p.classList.remove("active"));
-      pill.classList.add("active");
-      
-      const targetDayBtn = document.querySelector(`.day-tab-btn[data-day="${pill.dataset.day}"]`);
-      if (targetDayBtn) {
-        targetDayBtn.click();
+      if (tabKey) {
+        switchTab(tabKey);
+        closeSidebar();
       }
-      switchTab("tab-daily");
-      closeSidebar();
     });
   });
 
+  // Sidebar Jump to Active Block action
   if (jumpActiveBtn) {
     jumpActiveBtn.addEventListener("click", () => {
-      switchTab("tab-daily");
       closeSidebar();
       const jumpBtn = document.getElementById("jumpToCurrentBlockBtn");
       if (jumpBtn) jumpBtn.click();
@@ -491,33 +474,54 @@ function initSidebar(todayName) {
   }
 }
 
-// --- Day Selector Tabs ---
+// --- Day Selector (Nested Under Today's Timetable in Sidebar) ---
 function initDayTabs(todayName) {
-  const dayBtns = document.querySelectorAll(".day-tab-btn");
-  dayBtns.forEach(btn => {
-    const isToday = btn.dataset.day === todayName;
-    if (isToday) {
-      btn.innerHTML = `${btn.textContent.trim().split(" ")[0]} <span class="today-marker">(Today)</span>`;
-    }
+  const nestedDayBtns = document.querySelectorAll("#sidebarDaysList .nested-day-btn");
+  const activeDayIndicator = document.getElementById("activeDayIndicator");
+  const sidebarCurrentDaySub = document.getElementById("sidebarCurrentDaySub");
 
-    if (btn.dataset.day === currentSelectedDay) {
-      btn.classList.add("active");
-      setTimeout(() => {
-        btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-      }, 200);
-    } else {
-      btn.classList.remove("active");
+  function updateDayDisplay(dayKey) {
+    currentSelectedDay = dayKey;
+    if (activeDayIndicator) {
+      activeDayIndicator.textContent = dayKey.toUpperCase();
+    }
+    if (sidebarCurrentDaySub) {
+      const dayData = scheduleData[dayKey];
+      sidebarCurrentDaySub.textContent = dayData ? `${dayData.title}${dayKey === todayName ? " (Today)" : ""}` : "";
+    }
+    nestedDayBtns.forEach(b => {
+      b.classList.toggle("active", b.dataset.day === dayKey);
+    });
+  }
+
+  // Initial state setup
+  updateDayDisplay(currentSelectedDay);
+
+  nestedDayBtns.forEach(btn => {
+    const isToday = btn.dataset.day === todayName;
+    if (isToday && !btn.querySelector(".nested-today-badge")) {
+      const badge = document.createElement("span");
+      badge.className = "nested-today-badge";
+      badge.textContent = "TODAY";
+      btn.appendChild(badge);
     }
 
     btn.addEventListener("click", () => {
-      dayBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-      currentSelectedDay = btn.dataset.day;
+      updateDayDisplay(btn.dataset.day);
       renderTimeline(currentSelectedDay);
+      switchTab("tab-daily");
+      
+      const sidebar = document.getElementById("modernSidebar");
+      const backdrop = document.getElementById("sidebarBackdrop");
+      const menuToggle = document.getElementById("menuToggleBtn");
+      if (sidebar) sidebar.classList.remove("open");
+      if (backdrop) backdrop.classList.remove("active");
+      if (menuToggle) menuToggle.classList.remove("is-active");
+      document.body.style.overflow = "";
     });
   });
 
+  // Jump to active block (switches to today if needed, then scrolls)
   const jumpBtn = document.getElementById("jumpToCurrentBlockBtn");
   if (jumpBtn) {
     jumpBtn.addEventListener("click", () => {
@@ -527,11 +531,10 @@ function initDayTabs(todayName) {
       const istNow = new Date(utc + (3600000 * 5.5));
       const today = daysOfWeek[istNow.getDay()];
 
+      switchTab("tab-daily");
+
       if (currentSelectedDay !== today) {
-        currentSelectedDay = today;
-        document.querySelectorAll(".day-tab-btn").forEach(b => {
-          b.classList.toggle("active", b.dataset.day === today);
-        });
+        updateDayDisplay(today);
         renderTimeline(today);
       }
 
@@ -539,8 +542,11 @@ function initDayTabs(todayName) {
         const activeRow = document.querySelector(".timeline-row.is-current");
         if (activeRow) {
           activeRow.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          const firstRow = document.querySelector(".timeline-row");
+          if (firstRow) firstRow.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 100);
+      }, 150);
     });
   }
 
@@ -940,12 +946,44 @@ function renderTrackerHistory() {
 // --- Universal Instant Plan Search Engine ---
 function initGlobalSearch() {
   const input = document.getElementById("globalSearchInput");
-  const overlay = document.getElementById("searchResultsOverlay");
+  const overlay = document.getElementById("searchModalOverlay");
   const list = document.getElementById("searchResultsList");
   const count = document.getElementById("searchResultsCount");
-  const closeBtn = document.getElementById("closeSearchResults");
+  const closeBtn = document.getElementById("closeSearchModalBtn");
+  const openBtn = document.getElementById("openSearchBtn");
 
   if (!input || !overlay) return;
+
+  function openSearch() {
+    overlay.style.display = "flex";
+    input.value = "";
+    if (count) count.textContent = "";
+    if (list) list.innerHTML = "";
+    setTimeout(() => input.focus(), 50);
+  }
+
+  function closeSearch() {
+    overlay.style.display = "none";
+    input.value = "";
+  }
+
+  if (openBtn) openBtn.addEventListener("click", openSearch);
+  if (closeBtn) closeBtn.addEventListener("click", closeSearch);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeSearch();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.style.display === "flex") {
+      closeSearch();
+    }
+    // Keyboard shortcut '/' or 'Ctrl+K' / 'Cmd+K' to search
+    if ((e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") ||
+        ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k")) {
+      e.preventDefault();
+      openSearch();
+    }
+  });
 
   const searchIndex = [];
 
@@ -959,7 +997,9 @@ function initGlobalSearch() {
         targetTab: "tab-daily",
         action: () => {
           currentSelectedDay = dayKey;
-          document.querySelectorAll(".day-tab-btn").forEach(p => p.classList.toggle("active", p.dataset.day === dayKey));
+          const activeDayIndicator = document.getElementById("activeDayIndicator");
+          if (activeDayIndicator) activeDayIndicator.textContent = dayKey.toUpperCase();
+          document.querySelectorAll("#sidebarDaysList .nested-day-btn").forEach(p => p.classList.toggle("active", p.dataset.day === dayKey));
           renderTimeline(dayKey);
           setTimeout(() => {
             const el = document.getElementById(`block-${dayKey}-${idx}`);
@@ -1046,7 +1086,8 @@ function initGlobalSearch() {
   input.addEventListener("input", (e) => {
     const q = e.target.value.trim().toLowerCase();
     if (!q) {
-      overlay.style.display = "none";
+      if (count) count.textContent = "";
+      if (list) list.innerHTML = `<p class="text-muted p-16">Type to search routines, meals, AI, skincare...</p>`;
       return;
     }
 
@@ -1071,20 +1112,12 @@ function initGlobalSearch() {
           <div class="result-snippet">${m.text.slice(0, 140)}...</div>
         `;
         item.addEventListener("click", () => {
-          overlay.style.display = "none";
-          input.value = "";
-
+          closeSearch();
           switchTab(m.targetTab);
           if (m.action) m.action();
         });
         list.appendChild(item);
       });
     }
-
-    overlay.style.display = "block";
-  });
-
-  closeBtn.addEventListener("click", () => {
-    overlay.style.display = "none";
   });
 }

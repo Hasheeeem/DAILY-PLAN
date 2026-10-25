@@ -12,21 +12,42 @@
 </head>
 <body class="newspaper-theme">
 
-  <!-- Classic Newspaper Masthead -->
-  <header class="masthead">
+  <!-- Sticky Broadsheet Top Navigation Bar (Clean & Minimalist like Apple) -->
+  <header class="top-nav-bar" id="topNavBar">
+    <div class="top-nav-inner">
+      <div class="nav-brand-wrap" id="brandHomeBtn" role="button" tabindex="0" title="Return to Today's Plan">
+        <span class="nav-brand-title">THE DAILY PLAN</span>
+        <span class="nav-brand-sep">•</span>
+        <span class="nav-brand-day" id="activeDayIndicator">SUNDAY</span>
+      </div>
+
+      <div class="nav-controls">
+        <span class="nav-live-clock" id="liveClock">09:30 IST</span>
+        
+        <button class="nav-search-btn" id="openSearchBtn" aria-label="Search" title="Search routines, meals, AI...">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <!-- Apple-style Minimalist 2-Line Hamburger Menu Button -->
+        <button class="apple-menu-btn" id="menuToggleBtn" aria-label="Open Navigation Sidebar" title="Sections Menu">
+          <span class="menu-bar bar-top"></span>
+          <span class="menu-bar bar-bot"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Masthead Hero Banner (Date, Title, Subtitle, Live Ribbon) -->
+  <div class="masthead-hero">
     <div class="masthead-top-line">
       <div class="meta-left">
         <span id="currentDateDisplay">Sunday, 25 October 2026</span>
-        <span class="sep">•</span>
-        <span class="clock-display" id="liveClock">08:00:00 IST</span>
       </div>
       <div class="meta-center">
         <span class="motto-text">“I care for my body, honour my responsibilities, and finish work deliberately.”</span>
-      </div>
-      <div class="meta-right">
-        <span class="search-trigger-wrap">
-          <input type="text" id="globalSearchInput" placeholder="Quick search (e.g. minoxidil, oats, AI, squats)..." autocomplete="off">
-        </span>
       </div>
     </div>
 
@@ -37,147 +58,157 @@
 
     <!-- Active Now Live Wire Banner -->
     <div class="live-wire-bar" id="liveWireBar">
-      <span class="live-wire-label">ACTIVE TASK</span>
-      <span class="live-wire-title" id="activeTaskTitle">Detecting current schedule...</span>
-      <span class="live-wire-timer" id="activeTaskTimer">--</span>
+      <div class="live-wire-content">
+        <span class="live-wire-label">ACTIVE TASK</span>
+        <span class="live-wire-title" id="activeTaskTitle">Detecting current schedule...</span>
+        <span class="live-wire-timer" id="activeTaskTimer">--</span>
+      </div>
       <span class="live-wire-bedtime">Lights out: 11:00 PM IST (<span id="bedtimeCountdown">--</span>)</span>
     </div>
+  </div>
 
-    <!-- Sticky Broadsheet Navigation Bar (Always Visible at Top of Screen) -->
-    <nav class="sticky-nav-bar" id="stickyNavBar">
-      <div class="sticky-nav-left">
-        <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Open Sections Menu" title="Open Sections Directory">
-          <span class="sidebar-hamburger">☰</span>
-          <span class="sidebar-toggle-label">SECTIONS INDEX</span>
-          <span class="sections-badge">8</span>
-        </button>
-
-        <div class="current-section-display" id="currentSectionDisplay" title="Click to open Sections Directory">
-          <span class="current-section-prefix">VIEWING:</span>
-          <span class="current-section-name" id="activeSectionName">Today's Timetable</span>
-          <span class="current-section-caret">▾</span>
-        </div>
-      </div>
-
-      <div class="sticky-nav-right">
-        <button class="sticky-quick-btn" id="stickyJumpActiveBtn" title="Jump to current active schedule block">⚡ Active Task</button>
-      </div>
-    </nav>
-  </header>
-
-  <!-- Off-Canvas Sections Sidebar Drawer (Desktop & Mobile) -->
+  <!-- Off-Canvas Modern Sidebar Drawer (Openable/Closable on Mobile and Computer) -->
   <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
-  <aside class="sections-sidebar" id="sectionsSidebar" aria-label="Sections Directory">
-    <div class="sidebar-header">
-      <div class="sidebar-header-left">
-        <span class="sidebar-kicker">EDITION DIRECTORY</span>
-        <h2 class="sidebar-title">Sections Index</h2>
+  <aside class="modern-sidebar" id="modernSidebar" aria-label="Navigation Sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-head-left">
+        <span class="sidebar-kicker">PERSONAL OPERATING SYSTEM</span>
+        <h2 class="sidebar-brand-name">THE DAILY PLAN</h2>
       </div>
-      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">✕ Close</button>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">✕</button>
     </div>
 
-    <div class="sidebar-content">
-      <div class="sidebar-quick-day">
-        <span class="sidebar-subheading">QUICK DAY SELECTOR</span>
-        <div class="sidebar-day-pills" id="sidebarDayPills">
-          <button class="sidebar-day-pill" data-day="monday">Mon</button>
-          <button class="sidebar-day-pill" data-day="tuesday">Tue</button>
-          <button class="sidebar-day-pill" data-day="wednesday">Wed</button>
-          <button class="sidebar-day-pill" data-day="thursday">Thu</button>
-          <button class="sidebar-day-pill" data-day="friday">Fri</button>
-          <button class="sidebar-day-pill" data-day="saturday">Sat</button>
-          <button class="sidebar-day-pill" data-day="sunday">Sun</button>
+    <div class="sidebar-body">
+      <!-- Section 1: Timetable with nested 7 days -->
+      <div class="sidebar-group">
+        <div class="sidebar-group-title-row" id="sidebarTimetableToggle">
+          <button class="sidebar-nav-item active" data-tab="tab-daily">
+            <span class="nav-item-num">01</span>
+            <div class="nav-item-info">
+              <span class="nav-item-title">Today's Timetable</span>
+              <span class="nav-item-sub" id="sidebarCurrentDaySub">Sunday (Today)</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- 7 Days List Nested Under Timetable -->
+        <div class="sidebar-nested-days" id="sidebarDaysList">
+          <button class="nested-day-btn" data-day="monday">
+            <span class="nested-day-code">MON</span>
+            <span class="nested-day-name">Monday</span>
+            <span class="nested-day-tag">Delivery & Revenue</span>
+          </button>
+          <button class="nested-day-btn" data-day="tuesday">
+            <span class="nested-day-code">TUE</span>
+            <span class="nested-day-name">Tuesday</span>
+            <span class="nested-day-tag">Product & Systems</span>
+          </button>
+          <button class="nested-day-btn" data-day="wednesday">
+            <span class="nested-day-code">WED</span>
+            <span class="nested-day-name">Wednesday</span>
+            <span class="nested-day-tag">Mid-Week Delivery</span>
+          </button>
+          <button class="nested-day-btn" data-day="thursday">
+            <span class="nested-day-code">THU</span>
+            <span class="nested-day-name">Thursday</span>
+            <span class="nested-day-tag">Revenue & Closing</span>
+          </button>
+          <button class="nested-day-btn" data-day="friday">
+            <span class="nested-day-code">FRI</span>
+            <span class="nested-day-name">Friday</span>
+            <span class="nested-day-tag">Consolidation & Review</span>
+          </button>
+          <button class="nested-day-btn" data-day="saturday">
+            <span class="nested-day-code">SAT</span>
+            <span class="nested-day-name">Saturday</span>
+            <span class="nested-day-tag">Strategy & Rest</span>
+          </button>
+          <button class="nested-day-btn active" data-day="sunday">
+            <span class="nested-day-code">SUN</span>
+            <span class="nested-day-name">Sunday</span>
+            <span class="nested-day-tag">People & Preparation</span>
+            <span class="nested-today-badge">TODAY</span>
+          </button>
         </div>
       </div>
 
-      <nav class="sidebar-nav-list">
-        <span class="sidebar-subheading">8 PLAN SECTIONS</span>
-        
-        <button class="sidebar-nav-item active" data-tab="tab-daily">
-          <span class="sidebar-item-num">01</span>
-          <div class="sidebar-item-info">
-            <span class="sidebar-item-title">Today's Timetable</span>
-            <span class="sidebar-item-desc">5:30 AM wake, prayer windows & daily blocks</span>
-          </div>
-        </button>
-
+      <!-- Other 7 Sections -->
+      <nav class="sidebar-sections-list">
         <button class="sidebar-nav-item" data-tab="tab-career">
-          <span class="sidebar-item-num">02</span>
-          <div class="sidebar-item-info">
-            <span class="sidebar-item-title">AI & Career Roadmap</span>
-            <span class="sidebar-item-desc">AI Engineering, AWS labs, German & Gulf</span>
+          <span class="nav-item-num">02</span>
+          <div class="nav-item-info">
+            <span class="nav-item-title">AI & Career Roadmap</span>
+            <span class="nav-item-sub">AI Engineering, AWS Labs, German & Gulf</span>
           </div>
         </button>
 
         <button class="sidebar-nav-item" data-tab="tab-nutrition">
-          <span class="sidebar-item-num">03</span>
-          <div class="sidebar-item-info">
-            <span class="sidebar-item-title">Nutrition & Kerala Meals</span>
-            <span class="sidebar-item-desc">1,800 kcal, macros & portion calculator</span>
+          <span class="nav-item-num">03</span>
+          <div class="nav-item-info">
+            <span class="nav-item-title">Nutrition & Kerala Meals</span>
+            <span class="nav-item-sub">1,800 kcal & Portion Calculator</span>
           </div>
         </button>
 
         <button class="sidebar-nav-item" data-tab="tab-workout">
-          <span class="sidebar-item-num">04</span>
-          <div class="sidebar-item-info">
-            <span class="sidebar-item-title">Workouts & Walking</span>
-            <span class="sidebar-item-desc">Push / Pull / Legs routine & progression</span>
+          <span class="nav-item-num">04</span>
+          <div class="nav-item-info">
+            <span class="nav-item-title">Workouts & Walking</span>
+            <span class="nav-item-sub">Push / Pull / Legs Routine & Progression</span>
           </div>
         </button>
 
         <button class="sidebar-nav-item" data-tab="tab-care">
-          <span class="sidebar-item-num">05</span>
-          <div class="sidebar-item-info">
-            <span class="sidebar-item-title">Skincare, Hair & Health</span>
-            <span class="sidebar-item-desc">Minoxidil safety, SPF 50 & boundaries</span>
+          <span class="nav-item-num">05</span>
+          <div class="nav-item-info">
+            <span class="nav-item-title">Skincare, Hair & Health</span>
+            <span class="nav-item-sub">Minoxidil Protocol, SPF 50 & Safety</span>
           </div>
         </button>
 
         <button class="sidebar-nav-item" data-tab="tab-zypher">
-          <span class="sidebar-item-num">06</span>
-          <div class="sidebar-item-info">
-            <span class="sidebar-item-title">Zypher & 80/20 Work</span>
-            <span class="sidebar-item-desc">26-hr business budget, 3 staff & AI triage</span>
+          <span class="nav-item-num">06</span>
+          <div class="nav-item-info">
+            <span class="nav-item-title">Zypher & 80/20 Work</span>
+            <span class="nav-item-sub">26-Hour Budget, 3 Staff & AI Triage</span>
           </div>
         </button>
 
         <button class="sidebar-nav-item" data-tab="tab-habits">
-          <span class="sidebar-item-num">07</span>
-          <div class="sidebar-item-info">
-            <span class="sidebar-item-title">Habits & Personal Life</span>
-            <span class="sidebar-item-desc">Faith, family time & partner connection</span>
+          <span class="nav-item-num">07</span>
+          <div class="nav-item-info">
+            <span class="nav-item-title">Habits & Personal Life</span>
+            <span class="nav-item-sub">Faith, Family Time & Partner Calls</span>
           </div>
         </button>
 
         <button class="sidebar-nav-item" data-tab="tab-tracker">
-          <span class="sidebar-item-num">08</span>
-          <div class="sidebar-item-info">
-            <span class="sidebar-item-title">Daily Log & Review</span>
-            <span class="sidebar-item-desc">2-minute night check & clipboard report</span>
+          <span class="nav-item-num">08</span>
+          <div class="nav-item-info">
+            <span class="nav-item-title">Daily Log & Review</span>
+            <span class="nav-item-sub">2-Minute Checklist & Report Generator</span>
           </div>
         </button>
       </nav>
     </div>
 
-    <div class="sidebar-footer">
-      <div class="sidebar-footer-hint">Press <kbd>Esc</kbd> or click outside to close</div>
-      <button class="btn-outline-sm" id="sidebarJumpActiveBtn">Jump to Active Task</button>
+    <div class="sidebar-foot">
+      <button class="sidebar-jump-btn" id="sidebarJumpActiveBtn">⚡ Jump to Active Block</button>
+      <button class="sidebar-export-btn" id="exportFullPlanBtn">Export Plan Data (JSON)</button>
     </div>
   </aside>
 
-  <!-- Floating Quick-Menu Button (both mobile & desktop) -->
-  <button class="floating-sidebar-btn" id="floatingSidebarBtn" aria-label="Open Sections Menu" title="Open Sections Directory">
-    <span class="floating-icon">☰</span>
-    <span class="floating-text">Sections</span>
-  </button>
-
-  <!-- Search Results Overlay Dropdown -->
-  <div class="search-results-panel" id="searchResultsOverlay" style="display: none;">
-    <div class="search-results-header">
-      <span id="searchResultsCount" class="results-count">0 results</span>
-      <button id="closeSearchResults" class="btn-link">Close ✕</button>
+  <!-- Search Modal Overlay -->
+  <div class="search-modal-backdrop" id="searchModalOverlay" style="display: none;">
+    <div class="search-modal-panel">
+      <div class="search-modal-input-wrap">
+        <span class="search-modal-icon">🔍</span>
+        <input type="text" id="globalSearchInput" placeholder="Type to search routines, meals, AI, skincare..." autocomplete="off">
+        <button id="closeSearchModalBtn" class="search-modal-close" aria-label="Close search">✕</button>
+      </div>
+      <div class="search-results-count" id="searchResultsCount"></div>
+      <div class="search-results-list" id="searchResultsList"></div>
     </div>
-    <div id="searchResultsList" class="results-list"></div>
   </div>
 
   <!-- Main Newspaper Body -->
@@ -187,22 +218,11 @@
          TAB 1: TODAY'S TIMETABLE (AUTO-OPENS CURRENT DAY)
          ======================================================== -->
     <section class="tab-pane active" id="tab-daily">
-      <!-- Day Selector Row -->
-      <div class="day-bar">
-        <div class="day-pills-row" id="dayPills">
-          <button class="day-tab-btn" data-day="monday">Monday</button>
-          <button class="day-tab-btn" data-day="tuesday">Tuesday</button>
-          <button class="day-tab-btn" data-day="wednesday">Wednesday</button>
-          <button class="day-tab-btn" data-day="thursday">Thursday</button>
-          <button class="day-tab-btn" data-day="friday">Friday</button>
-          <button class="day-tab-btn" data-day="saturday">Saturday</button>
-          <button class="day-tab-btn" data-day="sunday">Sunday <span class="today-marker" id="todayMarker" style="display:none;">(Today)</span></button>
-        </div>
-        <div class="day-quick-actions">
-          <button class="btn-outline-sm" id="jumpToCurrentBlockBtn">Jump to Active Block</button>
-          <button class="btn-outline-sm" id="resetCheckboxesBtn">Reset Today's Checks</button>
-          <button class="btn-outline-sm" id="printDayBtn">Print Page</button>
-        </div>
+      <!-- Quick Action Controls (Zero Cropping, Fits All Screens) -->
+      <div class="day-quick-bar">
+        <button class="btn-newspaper-sm" id="jumpToCurrentBlockBtn">⚡ Jump to Active Block</button>
+        <button class="btn-outline-sm" id="resetCheckboxesBtn">Reset Today's Checks</button>
+        <button class="btn-outline-sm" id="printDayBtn">Print Page</button>
       </div>
 
       <!-- Editorial Day Header -->
