@@ -1,0 +1,24 @@
+# Personal & Sensitive Identity Documents
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.bmp
+*.ico
+*.cer
+*.crt
+*.key
+*.pem
+*.pfx
+*.env
+*.env.*
+*.log
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

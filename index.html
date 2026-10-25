@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Daily Plan | Personal Operating System</title>
+  <meta name="description" content="A clean, newspaper-style daily life manual and operational cockpit for high-performance living, health, and learning.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="newspaper-theme">
+
+  <!-- Classic Newspaper Masthead -->
+  <header class="masthead">
+    <div class="masthead-top-line">
+      <div class="meta-left">
+        <span id="currentDateDisplay">Sunday, 25 October 2026</span>
+        <span class="sep">•</span>
+        <span class="clock-display" id="liveClock">08:00:00 IST</span>
+      </div>
+      <div class="meta-center">
+        <span class="motto-text">“I care for my body, honour my responsibilities, and finish work deliberately.”</span>
+      </div>
+      <div class="meta-right">
+        <span class="search-trigger-wrap">
+          <input type="text" id="globalSearchInput" placeholder="Quick search (e.g. minoxidil, oats, AI, squats)..." autocomplete="off">
+        </span>
+      </div>
+    </div>
+
+    <div class="masthead-title-wrap">
+      <h1 class="masthead-title">THE DAILY PLAN</h1>
+      <p class="masthead-subtitle">The Complete Operational Manual for Health, Prayer, Startup, AI & Career, and Relationships</p>
+    </div>
+
+    <!-- Active Now Live Wire Banner -->
+    <div class="live-wire-bar" id="liveWireBar">
+      <span class="live-wire-label">ACTIVE TASK</span>
+      <span class="live-wire-title" id="activeTaskTitle">Detecting current schedule...</span>
+      <span class="live-wire-timer" id="activeTaskTimer">--</span>
+      <span class="live-wire-bedtime">Lights out: 11:00 PM IST (<span id="bedtimeCountdown">--</span>)</span>
+    </div>
+
+    <!-- Newspaper Section Navigation -->
+    <nav class="editorial-nav">
+      <button class="nav-btn active" data-tab="tab-daily">Today's Timetable</button>
+      <button class="nav-btn" data-tab="tab-career">AI & Career Roadmap</button>
+      <button class="nav-btn" data-tab="tab-nutrition">Nutrition & Meals</button>
+      <button class="nav-btn" data-tab="tab-workout">Workouts & Walking</button>
+      <button class="nav-btn" data-tab="tab-care">Skincare, Hair & Health</button>
+      <button class="nav-btn" data-tab="tab-zypher">Startup & 80/20 Work</button>
+      <button class="nav-btn" data-tab="tab-habits">Habits & Personal Life</button>
+      <button class="nav-btn" data-tab="tab-tracker">Daily Log & Review</button>
+      <button class="nav-btn" data-tab="tab-sources">Sources & Reference</button>
+    </nav>
+  </header>
+
+  <!-- Search Results Overlay Dropdown -->
+  <div class="search-results-panel" id="searchResultsOverlay" style="display: none;">
+    <div class="search-results-header">
+      <span id="searchResultsCount" class="results-count">0 results</span>
+      <button id="closeSearchResults" class="btn-link">Close ✕</button>
+    </div>
+    <div id="searchResultsList" class="results-list"></div>
+  </div>
+
+  <!-- Main Newspaper Body -->
+  <main class="page-container">
+
+    <!-- ========================================================
+         TAB 1: TODAY'S TIMETABLE (AUTO-OPENS CURRENT DAY)
+         ======================================================== -->
+    <section class="tab-pane active" id="tab-daily">
+      <!-- Day Selector Row -->
+      <div class="day-bar">
+        <div class="day-pills-row" id="dayPills">
+          <button class="day-tab-btn" data-day="monday">Monday</button>
+          <button class="day-tab-btn" data-day="tuesday">Tuesday</button>
+          <button class="day-tab-btn" data-day="wednesday">Wednesday</button>
+          <button class="day-tab-btn" data-day="thursday">Thursday</button>
+          <button class="day-tab-btn" data-day="friday">Friday</button>
+          <button class="day-tab-btn" data-day="saturday">Saturday</button>
+          <button class="day-tab-btn" data-day="sunday">Sunday <span class="today-marker" id="todayMarker" style="display:none;">(Today)</span></button>
+        </div>
+        <div class="day-quick-actions">
+          <button class="btn-outline-sm" id="jumpToCurrentBlockBtn">Jump to Active Block</button>
+          <button class="btn-outline-sm" id="resetCheckboxesBtn">Reset Today's Checks</button>
+          <button class="btn-outline-sm" id="printDayBtn">Print Page</button>
+        </div>
+      </div>
+
+      <!-- Editorial Day Header -->
+      <div class="editorial-day-header">
+        <div class="day-headline-group">
+          <h2 class="day-main-heading" id="dayTitleDisplay">Sunday</h2>
+          <span class="day-topic-rule" id="dayFocusDisplay">People and preparation</span>
+        </div>
+        <p class="day-lead-text" id="daySubtitleDisplay">Daily routine with 11:00 PM bedtime and 5:30 AM wake. Outdoor morning walk, food prep, family connection & weekly planning.</p>
+        
+        <div class="day-key-anchors">
+          <div class="anchor-item">
+            <span class="anchor-label">Sleep Window:</span>
+            <span class="anchor-value">11:00 PM – 5:30 AM (6h 30m)</span>
+          </div>
+          <div class="anchor-item">
+            <span class="anchor-label">Business Load:</span>
+            <span class="anchor-value" id="dayWorkHoursVal">~0.5 Hours (Emergency triage only)</span>
+          </div>
+          <div class="anchor-item">
+            <span class="anchor-label">German Class:</span>
+            <span class="anchor-value">4:00 – 5:30 PM (Protected daily)</span>
+          </div>
+          <div class="anchor-item">
+            <span class="anchor-label">Prayer Standard:</span>
+            <span class="anchor-value">5 Prayers On Time (Shafi Asr)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prayer Timetable Rule Notice -->
+      <div class="editorial-notice">
+        <strong>Prayer Timing Principle:</strong> Times below use October planning reserves (Fajr 5:05 AM, Sunrise 6:14 AM, Dhuhr 12:13 PM, Asr 3:33 PM, Maghrib 6:10 PM, Isha 7:20 PM). Your actual mosque congregation and adhan times override them. Check your local mosque schedule every evening and pray within the valid time window.
+      </div>
+
+      <!-- Schedule Timeline Container (Rendered dynamically in app.js) -->
+      <div class="timeline-list" id="dailyTimeline">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 2: AI & CAREER ROADMAP
+         ======================================================== -->
+    <section class="tab-pane" id="tab-career">
+      <div class="editorial-section-header">
+        <h2 class="section-title">Career Roadmap: AI Engineering, Cloud Foundations, German & Gulf</h2>
+        <p class="section-subtitle">Long-term vision: Full-Stack AI Engineer building intelligent systems & web products, supported by practical cloud infrastructure, professional applications, and international readiness.</p>
+      </div>
+
+      <!-- 4 Strategic Pillars -->
+      <div class="columns-4">
+        <div class="pillar-box">
+          <div class="pillar-num">PILLAR I</div>
+          <h3 class="pillar-title">AI Engineering</h3>
+          <p class="pillar-text">LLM integrations, agentic workflows, prompt engineering, RAG pipelines, API development, and shipping intelligent client products through startup projects and personal prototypes.</p>
+        </div>
+        <div class="pillar-box">
+          <div class="pillar-num">PILLAR II</div>
+          <h3 class="pillar-title">Cloud & Systems</h3>
+          <p class="pillar-text">AWS practical labs (IAM, S3, EC2, RDS, deployments). Solid cloud foundations to deploy and scale AI models and modern web applications without getting trapped in pure theory.</p>
+        </div>
+        <div class="pillar-box">
+          <div class="pillar-num">PILLAR III</div>
+          <h3 class="pillar-title">German Language</h3>
+          <p class="pillar-text">Protected 90-minute class daily (4:00–5:30 PM) + 10-minute active recall. Laying the ground for the 1–2 year European career target, Inshallah.</p>
+        </div>
+        <div class="pillar-box">
+          <div class="pillar-num">PILLAR IV</div>
+          <h3 class="pillar-title">Targeted Job & Gulf</h3>
+          <p class="pillar-text">4–6 tailored applications weekly, proof-of-work portfolio evidence, 7–10 day follow-ups, and bi-weekly Saturday career blocks for realistic Gulf relocation readiness.</p>
+        </div>
+      </div>
+
+      <!-- AI Engineer & Cloud Study Roadmap Table -->
+      <div class="editorial-card mt-24">
+        <div class="editorial-card-header">
+          <h3 class="card-headline">8-Week Cloud & Technical Foundations Curriculum (3h 45m Weekly)</h3>
+          <span class="card-caption">Tuesday Theory (45m) • Thursday Lab (45m) • Saturday Build (60m) • Sunday Project (75m)</span>
+        </div>
+        <table class="newspaper-table">
+          <thead>
+            <tr>
+              <th style="width: 10%;">Week</th>
+              <th style="width: 35%;">Core Subject & Practical Concept</th>
+              <th style="width: 45%;">Concrete Evidence to Produce (Portfolio)</th>
+              <th style="width: 10%;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="awsRoadmapTableBody">
+            <!-- Rendered in app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Job Search & Gulf Strategy Columns -->
+      <div class="columns-2 mt-24">
+        <div class="editorial-card">
+          <div class="editorial-card-header">
+            <h3 class="card-headline">Targeted Job Search Protocol</h3>
+          </div>
+          <ul class="editorial-list">
+            <li><strong>Role Focus:</strong> Frontend / Full-Stack / AI Integration roles that your actual project outcomes support. Keep tailored resume variations.</li>
+            <li><strong>Weekly Cadence:</strong> 4 to 6 strong, tailored applications + 2 to 3 direct networking/recruiter messages per week. Quality over mindless volume.</li>
+            <li><strong>Dedicated Time Blocks:</strong> Monday 45m (Applications), Wednesday 45m (Interview practice: 20m technical coding, 5m speak aloud, 20m behavioral), Wednesday 75m (Portfolio evidence), Saturday 45m (Career block).</li>
+            <li><strong>Application Tracker Fields:</strong> Company, Role, Country, Job Link, Fit Reason, Resume Version, Application Date, Status, Next Action.</li>
+            <li><strong>Follow-Up Boundary:</strong> Exactly one polite follow-up 7 to 10 business days after applying if a contact route exists. Never send daily pestering messages.</li>
+            <li><strong>Truthful Proof:</strong> Describe what you built, what changed, and how it was tested. Never invent metrics, team sizes, or technologies.</li>
+          </ul>
+        </div>
+
+        <div class="editorial-card">
+          <div class="editorial-card-header">
+            <h3 class="card-headline">Gulf Preparation & Germany Strategy</h3>
+          </div>
+          <ul class="editorial-list">
+            <li><strong>Gulf Readiness (Bi-weekly Saturday Block):</strong> Dedicate 1 Saturday career block every 2 weeks to Gulf preparation: target city, shortlisted employers, living cost estimates, passport validity, and degree attestation.</li>
+            <li><strong>No Fake Guarantees:</strong> Never trust visit visas as a guarantee of work or hand money to unverified middlemen. Secure remote interviews and verified employers first.</li>
+            <li><strong>Germany 1–2 Year Route:</strong> Daily German class (4:00–5:30 PM + 10m recall) is your intellectual asset. Research official immigration pathways (Chancenkarte / EU Blue Card) rather than viewing the class as an automatic migration ticket.</li>
+            <li><strong>Dual Workload Rule:</strong> If accepting employment, review required hours and contracts. Reduce your operational role in startup duties and delegate tasks rather than trying to sustain two full-time jobs.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 3: NUTRITION & REGIONAL MEALS
+         ======================================================== -->
+    <section class="tab-pane" id="tab-nutrition">
+      <div class="editorial-section-header">
+        <h2 class="section-title">Nutrition, Calorie Targets & Portion Calibration</h2>
+        <p class="section-subtitle">Calibrated for healthy body recomposition: gradual sustainable fat loss of 0.25 to 0.5 kg/week over 5 to 10 months. Regular progress reviews.</p>
+      </div>
+
+      <!-- Macro Target Line -->
+      <div class="macro-banner">
+        <div class="macro-box">
+          <span class="macro-num">1,800</span>
+          <span class="macro-unit">kcal/day</span>
+          <span class="macro-tag">Energy (±100 kcal band)</span>
+        </div>
+        <div class="macro-box">
+          <span class="macro-num">120 g</span>
+          <span class="macro-unit">protein</span>
+          <span class="macro-tag">~1.6 g/kg (Range 110–130g)</span>
+        </div>
+        <div class="macro-box">
+          <span class="macro-num">205 g</span>
+          <span class="macro-unit">carbs</span>
+          <span class="macro-tag">Rice, Chapatis, Oats, Local staples</span>
+        </div>
+        <div class="macro-box">
+          <span class="macro-num">55 g</span>
+          <span class="macro-unit">healthy fats</span>
+          <span class="macro-tag">Measured oil & nuts</span>
+        </div>
+        <div class="macro-box">
+          <span class="macro-num">25–35 g</span>
+          <span class="macro-unit">dietary fiber</span>
+          <span class="macro-tag">Vegetables, Dal, Kadala</span>
+        </div>
+      </div>
+
+      <!-- Interactive Calculator Section -->
+      <div class="editorial-card mt-24">
+        <div class="editorial-card-header">
+          <h3 class="card-headline">Meal Portion Calculator</h3>
+          <span class="card-caption">Add or subtract portions to tally against the 1,800 kcal & 120 g protein targets</span>
+        </div>
+        
+        <div class="calculator-grid" id="portionCalcItems">
+          <!-- Populated in JS -->
+        </div>
+
+        <div class="calc-tally-bar">
+          <div class="tally-metric">
+            <span class="tally-label">Total Calories:</span>
+            <span class="tally-val" id="calcTotalCalories">0 kcal</span>
+            <span class="tally-limit">/ 1,800 kcal</span>
+          </div>
+          <div class="tally-metric">
+            <span class="tally-label">Total Protein:</span>
+            <span class="tally-val" id="calcTotalProtein">0 g</span>
+            <span class="tally-limit">/ 120 g target</span>
+          </div>
+          <div class="calc-btn-group">
+            <button class="btn-newspaper" id="loadSampleDayBtn">Load Sample 1,800 kcal Day</button>
+            <button class="btn-outline-sm" id="resetCalcBtn">Reset to 0</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practical Portions Reference Table -->
+      <div class="editorial-card mt-24">
+        <div class="editorial-card-header">
+          <h3 class="card-headline">Practical Food Portions & Estimates</h3>
+        </div>
+        <table class="newspaper-table">
+          <thead>
+            <tr>
+              <th>Food Item</th>
+              <th>Practical Serving Size</th>
+              <th>Calories</th>
+              <th>Protein</th>
+              <th>Practical Kitchen Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Cooked Rice</strong></td>
+              <td>150 g (about 1 level cup)</td>
+              <td>190 – 210 kcal</td>
+              <td>4 g</td>
+              <td>Measure cooked weight; bowl shapes can deceive.</td>
+            </tr>
+            <tr>
+              <td><strong>Chapati</strong></td>
+              <td>1 medium (30 g dry atta)</td>
+              <td>100 – 110 kcal</td>
+              <td>3 g</td>
+              <td>Made dry without added oil in the dough or pan.</td>
+            </tr>
+            <tr>
+              <td><strong>Whole Egg</strong></td>
+              <td>1 large egg</td>
+              <td>~70 kcal</td>
+              <td>6 g</td>
+              <td>Boiled, poached, or prepared with measured oil.</td>
+            </tr>
+            <tr>
+              <td><strong>Cooked Chicken</strong></td>
+              <td>100 g cooked skinless meat</td>
+              <td>165 – 210 kcal</td>
+              <td>25 – 31 g</td>
+              <td>Breast or trimmed meat in grilled or curry form.</td>
+            </tr>
+            <tr>
+              <td><strong>Cooked Fish</strong></td>
+              <td>100 g cooked edible portion</td>
+              <td>100 – 220 kcal</td>
+              <td>20 – 25 g</td>
+              <td>Choose grilled or curry fish over deep-fried fish.</td>
+            </tr>
+            <tr>
+              <td><strong>Rolled Oats</strong></td>
+              <td>40 g dry</td>
+              <td>~150 kcal</td>
+              <td>5 g</td>
+              <td>Simmer in 200 ml toned milk for morning anchor.</td>
+            </tr>
+            <tr>
+              <td><strong>Toned Milk</strong></td>
+              <td>200 ml</td>
+              <td>90 – 130 kcal</td>
+              <td>6 – 7 g</td>
+              <td>Count milk in tea/coffee as part of daily intake.</td>
+            </tr>
+            <tr>
+              <td><strong>Plain Curd</strong></td>
+              <td>200 g ordinary curd</td>
+              <td>120 – 160 kcal</td>
+              <td>7 – 10 g</td>
+              <td>Standard homemade or store curd (not Greek yogurt).</td>
+            </tr>
+            <tr>
+              <td><strong>Cooked Dal / Kadala</strong></td>
+              <td>1/2 to 1 cup</td>
+              <td>140 – 220 kcal</td>
+              <td>7 – 12 g</td>
+              <td>Rich in fiber; energy varies with coconut and oil.</td>
+            </tr>
+            <tr>
+              <td><strong>Nuts (Almonds/Peanuts)</strong></td>
+              <td>15 g (small handful)</td>
+              <td>~90 kcal</td>
+              <td>3 – 4 g</td>
+              <td>Weigh once; easy to eat 300 kcal unintentionally.</td>
+            </tr>
+            <tr>
+              <td><strong>Cooking Oil / Ghee</strong></td>
+              <td>1 teaspoon (5 ml)</td>
+              <td>~45 kcal</td>
+              <td>0 g</td>
+              <td>Always measure curry oil; never treat gravy as free.</td>
+            </tr>
+            <tr>
+              <td><strong>Tea / Coffee Sugar</strong></td>
+              <td>1 teaspoon (4 g)</td>
+              <td>~16 kcal</td>
+              <td>0 g</td>
+              <td>Track each spoonful; sweet tea quietly displaces food.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Sample Day & Dining Out Rules -->
+      <div class="columns-2 mt-24">
+        <div class="editorial-card">
+          <div class="editorial-card-header">
+            <h3 class="card-headline">Sample Daily Breakdown (~1,800 kcal)</h3>
+          </div>
+          <ul class="editorial-list">
+            <li><strong>Breakfast (07:05): 440–480 kcal | 24–27 g protein</strong><br>40 g oats in 200 ml milk, 2 eggs, 1 small fruit. Unsweetened tea (measure sugar/milk).</li>
+            <li><strong>Lunch (12:35): 520–600 kcal | 40–45 g protein</strong><br>150 g cooked rice, 120 g chicken, 100 g curd, 2 vegetable portions with measured oil.</li>
+            <li><strong>Asr Snack (15:15): 220–270 kcal | 11–13 g protein</strong><br>200 ml milk (or curd), 1 fruit, 25 g roasted chana. Caffeine-free tea after 1:00 PM.</li>
+            <li><strong>Dinner (18:30): 450–550 kcal | 30–35 g protein</strong><br>2 medium chapatis (or 150 g rice), 120 g fish, vegetables with modest oil.</li>
+          </ul>
+        </div>
+
+        <div class="editorial-card">
+          <div class="editorial-card-header">
+            <h3 class="card-headline">Flexibility, Dining Out & Weighing Rules</h3>
+          </div>
+          <ul class="editorial-list">
+            <li><strong>No Food Banned:</strong> Traditional staples (puttu, idlis, dosas, appam, rice, chapatis) all fit seamlessly by adjusting starch and oil portions.</li>
+            <li><strong>Bakery Snacks:</strong> Banana chips and savory snacks can quietly displace planned nutrition. Choose them deliberately in modest portions rather than bingeing guiltily.</li>
+            <li><strong>Dining Out:</strong> Outside meals can be planned: estimate portions, add curd or salad, skip sugary drinks, and resume normal eating at the next meal. Never starve before or after a social meal.</li>
+            <li><strong>Weigh-In Rule:</strong> Weigh 3 mornings a week after toilet and before breakfast. Compare weekly averages. If flat for 3 weeks, adjust cooking oil or add 1,000 steps.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 4: WORKOUTS & WALKING
+         ======================================================== -->
+    <section class="tab-pane" id="tab-workout">
+      <div class="editorial-section-header">
+        <h2 class="section-title">Physical Training, Strength Progression & Walking Targets</h2>
+        <p class="section-subtitle">Starting with progressive bodyweight strength and walking bases. Strength days on Monday, Wednesday, and Saturday; walking on Tuesday, Thursday, and Sunday; Friday recovery.</p>
+      </div>
+
+      <!-- Equipment Alert -->
+      <div class="editorial-notice">
+        <strong>Equipment Boundary:</strong> Your only stated equipment is <strong>one 1 kg dumbbell</strong>. This assists light shoulder work (arm circles, W-raises) but <em>cannot meaningfully load the legs</em>. Rely on progressive bodyweight. Use stable chairs or kitchen counters for support. <strong>Never anchor resistance to doors, weak tables, or improvised hanging fixtures.</strong>
+      </div>
+
+      <!-- Strength Overload Ladder -->
+      <div class="editorial-card mt-24">
+        <div class="editorial-card-header">
+          <h3 class="card-headline">8-Week Progressive Overload Strength Ladder</h3>
+        </div>
+        <table class="newspaper-table">
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>Frequency</th>
+              <th>Sets & Reps</th>
+              <th>Progression Criteria & Form Rules</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Week 1 (Establish)</strong></td>
+              <td>2 days (Wed & Sat only)</td>
+              <td>1 easy set of 4–6 moves</td>
+              <td>Stop with 2–3 reps in reserve. Focus on warm-up and form. Overrides full schedules.</td>
+            </tr>
+            <tr>
+              <td><strong>Week 2 (Adapt)</strong></td>
+              <td>2 days (Wed & Sat)</td>
+              <td>2 sets per movement</td>
+              <td>Progress to 2 sets only if fully recovered from Week 1 without joint pain.</td>
+            </tr>
+            <tr>
+              <td><strong>Weeks 3 & 4 (Consolidate)</strong></td>
+              <td>3 days (Mon, Wed, Sat)</td>
+              <td>2 sets per movement</td>
+              <td>Full 3-day strength cadence. Exhale through effort; rest 60–90 seconds between sets.</td>
+            </tr>
+            <tr>
+              <td><strong>Weeks 5 Onward (Overload)</strong></td>
+              <td>3 days (Mon, Wed, Sat)</td>
+              <td>Add reps, then 3rd set</td>
+              <td>Once top reps feel easy for 2 consecutive sessions: lower counter push-ups, deeper squats, or +5s plank. Never increase everything at once.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Exercise Details -->
+      <div class="columns-3 mt-24">
+        <div class="editorial-card">
+          <div class="editorial-card-header"><h3 class="card-headline">Legs & Posterior Chain</h3></div>
+          <ul class="editorial-list">
+            <li><strong>Chair Squats:</strong> 8–12 reps. Tap chair lightly without collapsing. Feet flat, knees tracking over toes. Progress to freestanding deep squats.</li>
+            <li><strong>Supported Split Squats:</strong> 6–8 reps/side (Wednesday). Hold stable counter if needed for balance.</li>
+            <li><strong>Glute Bridges:</strong> 10–15 reps. Drive through heels, 1-second squeeze at top.</li>
+            <li><strong>Hip Hinges:</strong> 10–12 reps. Unloaded hinge teaches safe spinal alignment.</li>
+          </ul>
+        </div>
+
+        <div class="editorial-card">
+          <div class="editorial-card-header"><h3 class="card-headline">Upper Body & Core</h3></div>
+          <ul class="editorial-list">
+            <li><strong>Wall / Counter Push-Ups:</strong> 6–10 reps. Rigid plank line. Progress by lowering hands from wall to kitchen counter.</li>
+            <li><strong>Prone W Raises:</strong> 8–12 reps. Lie face down, draw elbows to ribs, squeeze shoulder blades. Counteracts screen slouching.</li>
+            <li><strong>Plank:</strong> 15–25 seconds. Abdominal brace, no sagging lower back.</li>
+            <li><strong>Side Plank from Knees:</strong> 10–20 seconds/side. Builds lateral hip and spine stamina.</li>
+          </ul>
+        </div>
+
+        <div class="editorial-card">
+          <div class="editorial-card-header"><h3 class="card-headline">Walking & Running</h3></div>
+          <ul class="editorial-list">
+            <li><strong>Week 1 Walking:</strong> Add 10–15 min daily in 5-minute pieces (~1,500–2,500 steps).</li>
+            <li><strong>Weeks 2–4:</strong> Add 500 steps/day; build toward 3,000–4,500 steps.</li>
+            <li><strong>Weeks 5–8:</strong> 5,000–7,000 steps. (7,000–9,000 optional).</li>
+            <li><strong>Break Sitting:</strong> Walk for 2–5 minutes every 45–60 minutes.</li>
+            <li><strong>Running Base:</strong> Wait until 30m brisk walking is easy for 3–4 weeks. 2x weekly: 6 rounds of (30s jog + 90s walk).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 5: SKINCARE, HAIR & HEALTH
+         ======================================================== -->
+    <section class="tab-pane" id="tab-care">
+      <div class="editorial-section-header">
+        <h2 class="section-title">Skincare, Hair Styling, Treatment Boundaries & Migraines</h2>
+        <p class="section-subtitle">Evidence-based essentials. Strict clinical safety boundaries for hair care, sun protection, and migraine management.</p>
+      </div>
+
+      <!-- Critical Minoxidil Safety Box -->
+      <div class="editorial-card warning-card">
+        <div class="editorial-card-header">
+          <h3 class="card-headline">Critical Hair Treatment Boundaries & Safety Protocol</h3>
+        </div>
+        <ul class="editorial-list">
+          <li><strong>Minoxidil Regimen:</strong> Standard 1 ml twice daily is a reference example, NOT confirmation of your pump volume. Use ONLY your current dermatologist-confirmed label instructions. Apply to a <strong>completely dry scalp</strong> before styling.</li>
+          <li><strong>Drying Protocol:</strong> 4 hours before washing; 2 to 4 hours drying before resting on a pillow (the 5:50 PM slot leaves 5h 10m before bed). Never use a hot hairdryer over wet medication.</li>
+          <li><strong>NO DERMAROLLER:</strong> Do NOT use home microneedling. The FDA has not cleared microneedling with drugs. Needling changes absorption depth unpredictably and risks infection, severe irritation, and scarring.</li>
+          <li><strong>NO HOMEMADE ROSEMARY WATER:</strong> Rosemary oil was tested against 2% minoxidil in a small study; homemade rosemary water does NOT equate to 5% minoxidil. Never put homemade solutions on needle-punctured skin.</li>
+          <li><strong>Dermatologist Follow-Up:</strong> Book a review for early-onset thinning. Bring previous prescription, current spray bottle, and past procedure records.</li>
+          <li><strong>Stop Immediately & Seek Medical Help:</strong> If you experience palpitations, chest pain, dizziness, fainting, or unexplained swelling.</li>
+        </ul>
+      </div>
+
+      <!-- Hair Styling & Skincare -->
+      <div class="columns-2 mt-24">
+        <div class="editorial-card">
+          <div class="editorial-card-header">
+            <h3 class="card-headline">Hair Styling for Thin Wavy Hair</h3>
+          </div>
+          <ul class="editorial-list">
+            <li><strong>Best Styling Choice:</strong> Lightweight flexible-hold mousse for waves/curls. Walnut-sized dollop on barely damp lengths (avoid scalp). Scrunch once, air dry untouched, then gently scrunch out the crispness.</li>
+            <li><strong>Alternative:</strong> Light matte styling cream (half a pea to one pea size) if mousse feels wrong.</li>
+            <li><strong>Skip Completely:</strong> Heavy waxes, oily pomades, stiff gels (weighs hair down, exposes scalp), and drying sea-salt sprays.</li>
+            <li><strong>Hair Washing Cadence:</strong> 2 to 3 times weekly (Monday, Thursday, Saturday). Shampoo scalp gently, condition hair lengths, detangle with wide-tooth comb. No rough towel drying.</li>
+          </ul>
+        </div>
+
+        <div class="editorial-card">
+          <div class="editorial-card-header">
+            <h3 class="card-headline">Skincare Essentials & Health Rules</h3>
+          </div>
+          <ul class="editorial-list">
+            <li><strong>3 Essentials First:</strong> Gentle non-stripping cleanser (morning rinse if clean), lightweight moisturizer (glycerin/ceramides), and broad-spectrum SPF 50 sunscreen.</li>
+            <li><strong>Sunscreen Protection:</strong> Apply ~two finger lengths to face, ears, neck, and exposed scalp 15 min before sun. Reapply every 2 hours outdoors.</li>
+            <li><strong>Hydration:</strong> 2.3 to 2.7 liters of drinks daily (mostly water). Pale yellow urine benchmark. 400–800 ml/hr in heavy sweating.</li>
+            <li><strong>Migraine Management:</strong> Consistent sleep, meals, and hydration. <strong>Hard 1:00 PM caffeine cutoff.</strong> Reduce screen glare; keep a simple headache diary. Lower stimulation during attacks.</li>
+            <li><strong>Supplements:</strong> Vitamin D weekly/monthly prescription MUST NOT be taken daily. Omega-3: check EPA/DHA; fish intake can replace supplements. Multivitamin: do not duplicate nutrients.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 6: STARTUP & 80/20 WORK
+         ======================================================== -->
+    <section class="tab-pane" id="tab-zypher">
+      <div class="editorial-section-header">
+        <h2 class="section-title">Startup Execution & The 80/20 Work System</h2>
+        <p class="section-subtitle">Targeting ~26 business hours weekly across 3 staff members. CEO, sales, engineering, and delivery with explicit ownership and firm shutdown boundaries.</p>
+      </div>
+
+      <!-- Work Stats Row -->
+      <div class="macro-banner">
+        <div class="macro-box">
+          <span class="macro-num">~26 hrs</span>
+          <span class="macro-unit">weekly</span>
+          <span class="macro-tag">Total business budget</span>
+        </div>
+        <div class="macro-box">
+          <span class="macro-num">2.5 hrs</span>
+          <span class="macro-unit">daily</span>
+          <span class="macro-tag">Deep work focus blocks</span>
+        </div>
+        <div class="macro-box">
+          <span class="macro-num">30 mins</span>
+          <span class="macro-unit">daily</span>
+          <span class="macro-tag">Direct qualified sales</span>
+        </div>
+        <div class="macro-box">
+          <span class="macro-num">17:50 IST</span>
+          <span class="macro-unit">firm</span>
+          <span class="macro-tag">Daily work shutdown</span>
+        </div>
+      </div>
+
+      <div class="columns-2 mt-24">
+        <div class="editorial-card">
+          <div class="editorial-card-header">
+            <h3 class="card-headline">High-Value Work & Ownership</h3>
+          </div>
+          <ul class="editorial-list">
+            <li><strong>3 Weekly Outcomes:</strong> Choose exactly 3 at the week's start: (1) One client delivery outcome that builds trust, (2) One revenue-driving sales result, (3) One operational improvement that removes repeated manual work.</li>
+            <li><strong>1 Daily Finishable Deliverable:</strong> Break vague goals like “build backend” into concrete testable endpoints or client decisions.</li>
+            <li><strong>Explicit Ownership:</strong> Lead covers CEO, sales, dev, delivery. Assign one explicit owner, expected outcome, and due point for every task. Keep meetings strictly for debates/decisions.</li>
+            <li><strong>Direct Sales (30m):</strong> Mon–Thu qualified prospect follow-ups, proposals, and decisions. Track cash received and contracts, not just message counts.</li>
+          </ul>
+        </div>
+
+        <div class="editorial-card">
+          <div class="editorial-card-header">
+            <h3 class="card-headline">AI Waiting Protocol & Client Windows</h3>
+          </div>
+          <ul class="editorial-list">
+            <li><strong>Define Expected Output First:</strong> Always write down the expected code output and test criteria <em>before</em> prompting AI.</li>
+            <li><strong>Waiting Task List:</strong> Keep an active waiting list (review git diffs, inspect docs, write test cases, prepare next prompt). NO jumping to Instagram or WhatsApp!</li>
+            <li><strong>Deliberate Shutdown:</strong> Record completed items, exact tomorrow step 1, blocker owner. Check emergency channel briefly. Close work. Unfinished work reschedules to next block.</li>
+            <li><strong>International Client Calls:</strong> Offer 2:00–3:15 PM IST first; 7:35–8:15 PM IST exception max 1x/week. Prefer async recorded Loom demos. Never past midnight.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 7: HABITS & PERSONAL LIFE
+         ======================================================== -->
+    <section class="tab-pane" id="tab-habits">
+      <div class="editorial-section-header">
+        <h2 class="section-title">Habit Stacking, Nightly Reading, Relationships & Leisure</h2>
+        <p class="section-subtitle">Environmental design over willpower. Protected time for family and partner, structured communication videos, and strict social media boundaries.</p>
+      </div>
+
+      <div class="columns-3">
+        <div class="editorial-card">
+          <div class="editorial-card-header"><h3 class="card-headline">Habit Stacking Cues</h3></div>
+          <ul class="editorial-list">
+            <li><strong>After Fajr</strong> → Quran recitation & gratitude</li>
+            <li><strong>After Shower</strong> → Skincare & hair treatment</li>
+            <li><strong>After Breakfast</strong> → First prepared work deliverable</li>
+            <li><strong>After German Class</strong> → 10 min word recall & shutdown</li>
+            <li><strong>After Isha Prayer</strong> → Partner / personal unhurried call</li>
+            <li><strong>After Brushing Teeth</strong> → 15–20m reading & sleep at 11 PM</li>
+            <li><strong>Friction:</strong> Phone outside arm's reach during deep work; shoes & water bottle visible.</li>
+          </ul>
+        </div>
+
+        <div class="editorial-card">
+          <div class="editorial-card-header"><h3 class="card-headline">Nightly Reading & Training</h3></div>
+          <ul class="editorial-list">
+            <li><strong>Book 1: <em>Deep Work</em> by Cal Newport:</strong> Read 15–20 min nightly (5–10 pages). Focus on attention loss. Apply one idea: phone outside room and one explicit done condition.</li>
+            <li><strong>Book 2: <em>The 80/20 Manager</em>:</strong> Read after Deep Work. Delegate or remove 1 low-value task.</li>
+            <li><strong>Communication Videos (Tue, Thu, Fri):</strong> 20 min post-Isha. Preselect 1 video (10–15m), write 3 notes, rehearse 1 behavior, close YouTube. (Curriculum: W1-2 speaking/listening; W3-4 sales discovery; W5-6 leadership; W7-8 emotional regulation).</li>
+          </ul>
+        </div>
+
+        <div class="editorial-card">
+          <div class="editorial-card-header"><h3 class="card-headline">Personal Connections & Leisure</h3></div>
+          <ul class="editorial-list">
+            <li><strong>Partner / Personal Anchor:</strong> Lunchtime check-in/voice note + 35 to 45 min relaxed evening talk (19:45–20:30 IST). Unhurried, no multitasking. Quality over minute scoring.</li>
+            <li><strong>Family Connection:</strong> Present at breakfast, lunch, and dinner. Unhurried conversation with family without screens.</li>
+            <li><strong>Gaming Windows:</strong> Saturday 2:15 to 3:15 PM (with an end alarm set beforehand). Optional 20–30 min Friday/Sunday afternoon.</li>
+            <li><strong>Instagram Rule:</strong> Allowed in ONE 10-minute window after German. 10–20 min daily total. No feeds after waking, during meals, or after 10:15 PM.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 8: DAILY LOG & FRIDAY REVIEW
+         ======================================================== -->
+    <section class="tab-pane" id="tab-tracker">
+      <div class="editorial-section-header">
+        <h2 class="section-title">2-Minute Daily Behavior Log & Friday 40-Minute Review</h2>
+        <p class="section-subtitle">Objective behavioral tracking. Not a moral test—a diagnostics tool to spot friction. Generate formatted accountability reports with one click.</p>
+      </div>
+
+      <div class="editorial-card">
+        <div class="editorial-card-header">
+          <h3 class="card-headline">Daily Habit & Progress Entry</h3>
+          <button class="btn-newspaper" id="copyDailyReportBtn">Copy Daily Accountability Report</button>
+        </div>
+
+        <form id="dailyTrackerForm" class="newspaper-form">
+          <div class="form-row-3">
+            <div class="form-field">
+              <label for="trackDate">Date</label>
+              <input type="date" id="trackDate" required>
+            </div>
+            <div class="form-field">
+              <label for="trackSleepBed">Bedtime / Wake Time</label>
+              <input type="text" id="trackSleepBed" placeholder="e.g. 23:00 – 05:30 (6.5h in bed)">
+            </div>
+            <div class="form-field">
+              <label for="trackSleepEnergy">Daytime Alertness (1 to 5)</label>
+              <select id="trackSleepEnergy">
+                <option value="5">5/5 - High energy, clear focus</option>
+                <option value="4" selected>4/5 - Good energy, alert</option>
+                <option value="3">3/5 - Moderate, mild afternoon dip</option>
+                <option value="2">2/5 - Sluggish, fatigued</option>
+                <option value="1">1/5 - Exhausted / headache</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-field">
+              <label for="trackFaith">Faith & Prayers</label>
+              <input type="text" id="trackFaith" placeholder="5 prayers noted on time? Quran recited?">
+            </div>
+            <div class="form-field">
+              <label for="trackNutrition">Food & Water</label>
+              <input type="text" id="trackNutrition" placeholder="Approx kcal (~1800), protein (~120g), water (~2.5L)">
+            </div>
+            <div class="form-field">
+              <label for="trackMovement">Movement & Steps</label>
+              <input type="text" id="trackMovement" placeholder="Steps total (e.g. 3,500), strength or walk">
+            </div>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-field">
+              <label for="trackWork">Startup Work & Sales</label>
+              <input type="text" id="trackWork" placeholder="Focused minutes, 1 deliverable done, sales follow-up">
+            </div>
+            <div class="form-field">
+              <label for="trackLearning">German & AI / Career</label>
+              <input type="text" id="trackLearning" placeholder="German 90m + 10m recall done? Technical practice?">
+            </div>
+            <div class="form-field">
+              <label for="trackPersonal">Family & Personal Connections</label>
+              <input type="text" id="trackPersonal" placeholder="Lunch check-in done? Evening relaxed chat?">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="trackCare">Care & Boundaries</label>
+              <input type="text" id="trackCare" placeholder="AM/PM skin, hair treatment, IG minutes">
+            </div>
+            <div class="form-field">
+              <label for="trackOneLine">One-Line Daily Diagnostic</label>
+              <input type="text" id="trackOneLine" placeholder="What helped or got in the way? Next single adjustment...">
+            </div>
+          </div>
+
+          <div class="form-footer-actions mt-16">
+            <button type="submit" class="btn-newspaper">Save Today's Log</button>
+            <button type="button" class="btn-outline-sm" id="clearTrackerFormBtn">Clear Form</button>
+            <span id="saveStatusIndicator" class="save-status"></span>
+          </div>
+        </form>
+
+        <div class="history-section mt-24">
+          <h4 class="history-title">Recent Daily Logs History</h4>
+          <div id="historyList" class="history-records">
+            <p class="text-muted">No logs recorded yet. Submit the form above to start your daily log.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Friday 40-Minute Review Checklist -->
+      <div class="editorial-card mt-24">
+        <div class="editorial-card-header">
+          <h3 class="card-headline">Friday Weekly 40-Minute Review (14:00–14:40 IST)</h3>
+        </div>
+        <div class="columns-4">
+          <div class="review-box">
+            <span class="review-time">10 MIN</span>
+            <h4>Body & Health</h4>
+            <p>Compare weekly average weight, waist measurement, walking tolerance, strength progress, protein intake, water, and migraines.</p>
+          </div>
+          <div class="review-box">
+            <span class="review-time">10 MIN</span>
+            <h4>Business & Career</h4>
+            <p>Review focused hours, deliverables, sales conversations, proposals, cash received, job applications, and technical proof.</p>
+          </div>
+          <div class="review-box">
+            <span class="review-time">10 MIN</span>
+            <h4>Faith & Relationships</h4>
+            <p>Reflect on prayer consistency, family presence, partner's experience of your availability, screen boundaries, and mood.</p>
+          </div>
+          <div class="review-box">
+            <span class="review-time">10 MIN</span>
+            <h4>1–2 Adjustments</h4>
+            <p>If sleep fails, reduce evening load. If weight is flat for 3 weeks, check cooking oil. If sore, lower exercise dose. Keep what works!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 9: SOURCES & SCIENTIFIC CITATIONS
+         ======================================================== -->
+    <section class="tab-pane" id="tab-sources">
+      <div class="editorial-section-header">
+        <h2 class="section-title">Sources, Scientific Citations & Evidence Boundaries (S1–S19)</h2>
+        <p class="section-subtitle">Primary medical, nutritional, and technical literature checked on 13 October 2026. Local mosque timings and doctor prescriptions take precedence.</p>
+      </div>
+
+      <div class="editorial-card">
+        <table class="newspaper-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Ref</th>
+              <th style="width: 25%;">Author / Authority</th>
+              <th style="width: 35%;">Guideline Title & Subject</th>
+              <th style="width: 32%;">Application in Your Life Plan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>[S1]</td><td>CDC</td><td>About Sleep: Adult sleep duration & habits</td><td>Fixed 11:00 PM – 5:30 AM sleep anchor; consistent wake time daily.</td></tr>
+            <tr><td>[S2]</td><td>IslamicFinder</td><td>Regional Prayer Timetable (October 2026)</td><td>Shafi Asr setting proxy; local mosque overrides printed times.</td></tr>
+            <tr><td>[S3]</td><td>WHO</td><td>Adult Physical Activity Guidance</td><td>150–300 min moderate aerobic activity + at least 2 strength days weekly.</td></tr>
+            <tr><td>[S4]</td><td>Mifflin et al. 1990</td><td>Predictive Resting Energy Expenditure</td><td>Estimated resting energy ~1,674 kcal; sedentary baseline ~2,009 kcal.</td></tr>
+            <tr><td>[S5]</td><td>ISSN 2017</td><td>Protein and Exercise Position Stand</td><td>120 g daily protein target (~1.6 g/kg) spread across 3 meals + 1 snack.</td></tr>
+            <tr><td>[S6]</td><td>CDC</td><td>Steps for Losing Weight</td><td>Gradual sustained fat loss: 0.25 to 0.5 kg/week over 5 to 10 months.</td></tr>
+            <tr><td>[S7]</td><td>NHS</td><td>Water, drinks, and hydration signs</td><td>2.3 to 2.7 L starting range; pale yellow urine benchmark.</td></tr>
+            <tr><td>[S8]</td><td>AAD</td><td>Skin care on a budget</td><td>Start with 3 essentials: gentle cleanser, light moisturizer, sunscreen.</td></tr>
+            <tr><td>[S9]</td><td>AAD</td><td>How to apply sunscreen</td><td>Broad-spectrum SPF 50, ~two finger lengths, reapply every 2 hrs outdoors.</td></tr>
+            <tr><td>[S10]</td><td>AAD</td><td>Tips for healthy hair</td><td>Gentle shampoo 2–3x weekly, condition lengths, wide-tooth comb.</td></tr>
+            <tr><td>[S11]</td><td>DailyMed</td><td>Licensed 5% Minoxidil Solution Label</td><td>1 ml twice daily reference, dry scalp, 4h before wash, 2-4h drying before bed.</td></tr>
+            <tr><td>[S12]</td><td>FDA</td><td>Microneedling Devices safety guidance</td><td>No home dermarolling with drugs; unverified combination risks infection/scarring.</td></tr>
+            <tr><td>[S13]</td><td>Panahi et al. 2015</td><td>Rosemary oil trial vs 2% minoxidil</td><td>Homemade rosemary water is NOT 5% minoxidil; leave out of starter routine.</td></tr>
+            <tr><td>[S14]</td><td>Official AWS Training</td><td>Cloud Practitioner Essentials & Educate Labs</td><td>Structured cloud foundations without needing a credit card or paid tests early.</td></tr>
+            <tr><td>[S15]</td><td>NIH ODS</td><td>Vitamin D Consumer Fact Sheet</td><td>High-dose weekly/monthly prescription must never be converted to daily.</td></tr>
+            <tr><td>[S16]</td><td>NIH ODS</td><td>Omega-3 Consumer Fact Sheet</td><td>Check EPA and DHA content; fish intake can replace supplements.</td></tr>
+            <tr><td>[S17]</td><td>NIH ODS</td><td>Multivitamin/Mineral Fact Sheet</td><td>Avoid duplicating nutrients; never take double to make up missed days.</td></tr>
+            <tr><td>[S18]</td><td>AMF</td><td>Lifestyle changes for migraine management</td><td>Regular sleep, consistent meals, 1:00 PM caffeine cutoff, headache diary.</td></tr>
+            <tr><td>[S19]</td><td>Hakozaki et al.</td><td>Niacinamide research (2% and 5%)</td><td>Effective for barrier/pigmentation; unnecessary as a separate starter serum.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Editorial Newspaper Footer -->
+  <footer class="newspaper-footer">
+    <div class="footer-inner">
+      <div class="footer-col-left">
+        <span class="footer-headline">THE DAILY PLAN • PERSONAL OPERATIONAL RECORD</span>
+        <span class="footer-rule">“Never miss twice. A difficult day is contained by the next normal meal, prayer and sleep window.”</span>
+      </div>
+      <div class="footer-col-right">
+        <button class="btn-outline-sm" id="exportFullPlanBtn">Export Plan Data (JSON)</button>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
