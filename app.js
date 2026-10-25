@@ -345,30 +345,58 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// --- Navigation Tabs ---
-function initNavTabs() {
-  const navBtns = document.querySelectorAll(".editorial-nav .nav-btn");
+// --- Section Registry & Tab Controller ---
+const sectionTitles = {
+  "tab-daily": "Today's Timetable",
+  "tab-career": "AI & Career Roadmap",
+  "tab-nutrition": "Nutrition & Kerala Meals",
+  "tab-workout": "Workouts & Walking",
+  "tab-care": "Skincare, Hair & Health",
+  "tab-zypher": "Zypher & 80/20 Work",
+  "tab-habits": "Habits & Personal Life",
+  "tab-tracker": "Daily Log & Review"
+};
+
+function switchTab(tabId) {
   const panes = document.querySelectorAll(".tab-pane");
+  panes.forEach(p => p.classList.remove("active"));
 
-  navBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      navBtns.forEach(b => b.classList.remove("active"));
-      panes.forEach(p => p.classList.remove("active"));
+  const target = document.getElementById(tabId);
+  if (target) {
+    target.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
-      btn.classList.add("active");
-      const target = document.getElementById(btn.dataset.tab);
-      if (target) {
-        target.classList.add("active");
-        btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+  // Update active section title on the sticky bar
+  const nameEl = document.getElementById("activeSectionName");
+  if (nameEl && sectionTitles[tabId]) {
+    nameEl.textContent = sectionTitles[tabId];
+  }
 
-      // Sync active state in sidebar
-      document.querySelectorAll(".sidebar-nav-item").forEach(item => {
-        item.classList.toggle("active", item.dataset.tab === btn.dataset.tab);
-      });
-    });
+  // Sync active class on sidebar items
+  document.querySelectorAll(".sidebar-nav-item").forEach(item => {
+    item.classList.toggle("active", item.dataset.tab === tabId);
   });
+}
+
+// --- Sticky Navigation Bar & Plan Actions ---
+function initNavTabs() {
+  const currentDisplay = document.getElementById("currentSectionDisplay");
+  if (currentDisplay) {
+    currentDisplay.addEventListener("click", () => {
+      const toggle = document.getElementById("sidebarToggleBtn");
+      if (toggle) toggle.click();
+    });
+  }
+
+  const stickyJumpBtn = document.getElementById("stickyJumpActiveBtn");
+  if (stickyJumpBtn) {
+    stickyJumpBtn.addEventListener("click", () => {
+      switchTab("tab-daily");
+      const jumpBtn = document.getElementById("jumpToCurrentBlockBtn");
+      if (jumpBtn) jumpBtn.click();
+    });
+  }
 
   const exportBtn = document.getElementById("exportFullPlanBtn");
   if (exportBtn) {
@@ -429,10 +457,7 @@ function initSidebar(todayName) {
   document.querySelectorAll(".sidebar-nav-item").forEach(item => {
     item.addEventListener("click", () => {
       const tabKey = item.dataset.tab;
-      const targetNavBtn = document.querySelector(`.editorial-nav .nav-btn[data-tab="${tabKey}"]`);
-      if (targetNavBtn) {
-        targetNavBtn.click();
-      }
+      switchTab(tabKey);
       closeSidebar();
     });
   });
@@ -451,17 +476,14 @@ function initSidebar(todayName) {
       if (targetDayBtn) {
         targetDayBtn.click();
       }
-      // Ensure daily timetable tab is active
-      const dailyNavBtn = document.querySelector(`.editorial-nav .nav-btn[data-tab="tab-daily"]`);
-      if (dailyNavBtn && !dailyNavBtn.classList.contains("active")) {
-        dailyNavBtn.click();
-      }
+      switchTab("tab-daily");
       closeSidebar();
     });
   });
 
   if (jumpActiveBtn) {
     jumpActiveBtn.addEventListener("click", () => {
+      switchTab("tab-daily");
       closeSidebar();
       const jumpBtn = document.getElementById("jumpToCurrentBlockBtn");
       if (jumpBtn) jumpBtn.click();
@@ -1052,8 +1074,7 @@ function initGlobalSearch() {
           overlay.style.display = "none";
           input.value = "";
 
-          const tabBtn = document.querySelector(`.nav-btn[data-tab="${m.targetTab}"]`);
-          if (tabBtn) tabBtn.click();
+          switchTab(m.targetTab);
           if (m.action) m.action();
         });
         list.appendChild(item);

@@ -207,57 +207,40 @@ body.newspaper-theme {
   padding-left: 12px;
 }
 
-/* Editorial Nav Bar */
-.editorial-nav {
-  display: flex;
-  overflow-x: auto;
+/* ========================================================
+   STICKY BROADSHEET NAVIGATION BAR (Always Visible at Top)
+   ======================================================== */
+.sticky-nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  background: #ffffff;
   border-top: 1px solid var(--border-black);
-  border-bottom: 1px solid var(--border-black);
+  border-bottom: 2px solid var(--border-black);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   margin-top: 10px;
-  scrollbar-width: none;
-}
-.editorial-nav::-webkit-scrollbar {
-  display: none;
-}
-
-.nav-btn {
-  background: transparent;
-  border: none;
-  border-right: 1px solid var(--border-rule);
-  padding: 10px 18px;
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--ink-gray);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
 }
 
-.nav-btn:hover {
-  background: var(--bg-subtle);
-  color: var(--ink-black);
-}
-
-.nav-btn.active {
-  background: var(--ink-black);
-  color: #ffffff;
-  border-right-color: var(--ink-black);
+.sticky-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .sidebar-toggle-btn {
   background: var(--ink-black);
   color: #ffffff;
   border: none;
-  border-right: 2px solid var(--border-black);
-  padding: 10px 16px;
+  padding: 9px 16px;
   font-family: var(--font-sans);
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -272,8 +255,81 @@ body.newspaper-theme {
 }
 
 .sidebar-hamburger {
-  font-size: 1rem;
+  font-size: 1.05rem;
   line-height: 1;
+}
+
+.sections-badge {
+  background: #ffffff;
+  color: var(--ink-black);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 10px;
+  line-height: 1.2;
+}
+
+.current-section-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 2px;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+
+.current-section-display:hover {
+  background: var(--bg-subtle);
+}
+
+.current-section-prefix {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.5px;
+}
+
+.current-section-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink-black);
+}
+
+.current-section-caret {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  margin-left: 2px;
+}
+
+.sticky-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sticky-quick-btn {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-black);
+  color: var(--ink-black);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.sticky-quick-btn:hover {
+  background: var(--ink-black);
+  color: #ffffff;
 }
 
 /* ========================================================
@@ -1420,18 +1476,39 @@ body.newspaper-theme {
     width: 100%;
   }
 
-  /* Navigation Bar */
-  .editorial-nav {
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
+  /* Sticky Navigation Bar on Mobile */
+  .sticky-nav-bar {
+    padding: 6px 12px;
   }
 
-  .nav-btn {
-    padding: 10px 14px;
+  .sticky-nav-left {
+    gap: 8px;
+  }
+
+  .sidebar-toggle-btn {
+    padding: 8px 12px;
     font-size: 0.75rem;
-    min-height: 42px;
-    flex-shrink: 0;
-    scroll-snap-align: center;
+  }
+
+  .current-section-display {
+    padding: 4px 6px;
+  }
+
+  .current-section-name {
+    font-size: 0.88rem;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .current-section-prefix {
+    display: none;
+  }
+
+  .sticky-quick-btn {
+    padding: 6px 8px;
+    font-size: 0.68rem;
   }
 
   /* Timetable Day Bar */
@@ -1575,7 +1652,7 @@ body.newspaper-theme {
 
 /* Print */
 @media print {
-  .masthead-top-line, .live-wire-bar, .editorial-nav, .day-quick-actions, .newspaper-footer {
+  .masthead-top-line, .live-wire-bar, .sticky-nav-bar, .floating-sidebar-btn, .sections-sidebar, .sidebar-backdrop, .day-quick-actions, .newspaper-footer {
     display: none !important;
   }
   .tab-pane {
