@@ -45,17 +45,135 @@
 
     <!-- Newspaper Section Navigation -->
     <nav class="editorial-nav">
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Open Sections Menu" title="Open Sections Directory">
+        <span class="sidebar-hamburger">☰</span>
+        <span class="sidebar-toggle-label">Sections Index</span>
+      </button>
       <button class="nav-btn active" data-tab="tab-daily">Today's Timetable</button>
       <button class="nav-btn" data-tab="tab-career">AI & Career Roadmap</button>
-      <button class="nav-btn" data-tab="tab-nutrition">Nutrition & Meals</button>
+      <button class="nav-btn" data-tab="tab-nutrition">Nutrition & Kerala Meals</button>
       <button class="nav-btn" data-tab="tab-workout">Workouts & Walking</button>
       <button class="nav-btn" data-tab="tab-care">Skincare, Hair & Health</button>
-      <button class="nav-btn" data-tab="tab-zypher">Startup & 80/20 Work</button>
+      <button class="nav-btn" data-tab="tab-zypher">Zypher & 80/20 Work</button>
       <button class="nav-btn" data-tab="tab-habits">Habits & Personal Life</button>
       <button class="nav-btn" data-tab="tab-tracker">Daily Log & Review</button>
       <button class="nav-btn" data-tab="tab-sources">Sources & Reference</button>
     </nav>
   </header>
+
+  <!-- Off-Canvas Sections Sidebar Drawer (Desktop & Mobile) -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+  <aside class="sections-sidebar" id="sectionsSidebar" aria-label="Sections Directory">
+    <div class="sidebar-header">
+      <div class="sidebar-header-left">
+        <span class="sidebar-kicker">EDITION DIRECTORY</span>
+        <h2 class="sidebar-title">Sections Index</h2>
+      </div>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">✕ Close</button>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="sidebar-quick-day">
+        <span class="sidebar-subheading">QUICK DAY SELECTOR</span>
+        <div class="sidebar-day-pills" id="sidebarDayPills">
+          <button class="sidebar-day-pill" data-day="monday">Mon</button>
+          <button class="sidebar-day-pill" data-day="tuesday">Tue</button>
+          <button class="sidebar-day-pill" data-day="wednesday">Wed</button>
+          <button class="sidebar-day-pill" data-day="thursday">Thu</button>
+          <button class="sidebar-day-pill" data-day="friday">Fri</button>
+          <button class="sidebar-day-pill" data-day="saturday">Sat</button>
+          <button class="sidebar-day-pill" data-day="sunday">Sun</button>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav-list">
+        <span class="sidebar-subheading">9 PLAN SECTIONS</span>
+        
+        <button class="sidebar-nav-item active" data-tab="tab-daily">
+          <span class="sidebar-item-num">01</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">Today's Timetable</span>
+            <span class="sidebar-item-desc">5:30 AM wake, prayer windows & daily blocks</span>
+          </div>
+        </button>
+
+        <button class="sidebar-nav-item" data-tab="tab-career">
+          <span class="sidebar-item-num">02</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">AI & Career Roadmap</span>
+            <span class="sidebar-item-desc">AI Engineering, AWS labs, German & Gulf</span>
+          </div>
+        </button>
+
+        <button class="sidebar-nav-item" data-tab="tab-nutrition">
+          <span class="sidebar-item-num">03</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">Nutrition & Kerala Meals</span>
+            <span class="sidebar-item-desc">1,800 kcal, macros & portion calculator</span>
+          </div>
+        </button>
+
+        <button class="sidebar-nav-item" data-tab="tab-workout">
+          <span class="sidebar-item-num">04</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">Workouts & Walking</span>
+            <span class="sidebar-item-desc">Push / Pull / Legs routine & progression</span>
+          </div>
+        </button>
+
+        <button class="sidebar-nav-item" data-tab="tab-care">
+          <span class="sidebar-item-num">05</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">Skincare, Hair & Health</span>
+            <span class="sidebar-item-desc">Minoxidil safety, SPF 50 & boundaries</span>
+          </div>
+        </button>
+
+        <button class="sidebar-nav-item" data-tab="tab-zypher">
+          <span class="sidebar-item-num">06</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">Zypher & 80/20 Work</span>
+            <span class="sidebar-item-desc">26-hr business budget, 3 staff & AI triage</span>
+          </div>
+        </button>
+
+        <button class="sidebar-nav-item" data-tab="tab-habits">
+          <span class="sidebar-item-num">07</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">Habits & Personal Life</span>
+            <span class="sidebar-item-desc">Faith, family time & partner connection</span>
+          </div>
+        </button>
+
+        <button class="sidebar-nav-item" data-tab="tab-tracker">
+          <span class="sidebar-item-num">08</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">Daily Log & Review</span>
+            <span class="sidebar-item-desc">2-minute night check & clipboard report</span>
+          </div>
+        </button>
+
+        <button class="sidebar-nav-item" data-tab="tab-sources">
+          <span class="sidebar-item-num">09</span>
+          <div class="sidebar-item-info">
+            <span class="sidebar-item-title">Sources & Reference</span>
+            <span class="sidebar-item-desc">39-page life plan cross-reference guide</span>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-hint">Press <kbd>Esc</kbd> or click outside to close</div>
+      <button class="btn-outline-sm" id="sidebarJumpActiveBtn">Jump to Active Task</button>
+    </div>
+  </aside>
+
+  <!-- Floating Quick-Menu Button (both mobile & desktop) -->
+  <button class="floating-sidebar-btn" id="floatingSidebarBtn" aria-label="Open Sections Menu" title="Open Sections Directory">
+    <span class="floating-icon">☰</span>
+    <span class="floating-text">Sections</span>
+  </button>
 
   <!-- Search Results Overlay Dropdown -->
   <div class="search-results-panel" id="searchResultsOverlay" style="display: none;">

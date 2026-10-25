@@ -330,6 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (dateEl) dateEl.textContent = dateStr;
 
   initNavTabs();
+  initSidebar(todayName);
   initDayTabs(todayName);
   renderTimeline(currentSelectedDay);
   renderAwsRoadmap();
@@ -361,6 +362,11 @@ function initNavTabs() {
         btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
+
+      // Sync active state in sidebar
+      document.querySelectorAll(".sidebar-nav-item").forEach(item => {
+        item.classList.toggle("active", item.dataset.tab === btn.dataset.tab);
+      });
     });
   });
 
@@ -381,6 +387,84 @@ function initNavTabs() {
       a.download = `Daily_Plan_Backup_${new Date().toISOString().split("T")[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
+    });
+  }
+}
+
+// --- Off-Canvas Sections Sidebar Drawer ---
+function initSidebar(todayName) {
+  const sidebar = document.getElementById("sectionsSidebar");
+  const backdrop = document.getElementById("sidebarBackdrop");
+  const toggleBtn = document.getElementById("sidebarToggleBtn");
+  const closeBtn = document.getElementById("sidebarCloseBtn");
+  const floatingBtn = document.getElementById("floatingSidebarBtn");
+  const jumpActiveBtn = document.getElementById("sidebarJumpActiveBtn");
+
+  if (!sidebar || !backdrop) return;
+
+  function openSidebar() {
+    sidebar.classList.add("open");
+    backdrop.classList.add("active");
+    document.body.style.overflow = "hidden"; // Prevent background scroll
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    backdrop.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+
+  if (toggleBtn) toggleBtn.addEventListener("click", openSidebar);
+  if (floatingBtn) floatingBtn.addEventListener("click", openSidebar);
+  if (closeBtn) closeBtn.addEventListener("click", closeSidebar);
+  if (backdrop) backdrop.addEventListener("click", closeSidebar);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sidebar.classList.contains("open")) {
+      closeSidebar();
+    }
+  });
+
+  // Section item click in sidebar
+  document.querySelectorAll(".sidebar-nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const tabKey = item.dataset.tab;
+      const targetNavBtn = document.querySelector(`.editorial-nav .nav-btn[data-tab="${tabKey}"]`);
+      if (targetNavBtn) {
+        targetNavBtn.click();
+      }
+      closeSidebar();
+    });
+  });
+
+  // Quick Day selector in sidebar
+  const sidebarDayPills = document.querySelectorAll(".sidebar-day-pill");
+  sidebarDayPills.forEach(pill => {
+    if (pill.dataset.day === currentSelectedDay) {
+      pill.classList.add("active");
+    }
+    pill.addEventListener("click", () => {
+      sidebarDayPills.forEach(p => p.classList.remove("active"));
+      pill.classList.add("active");
+      
+      const targetDayBtn = document.querySelector(`.day-tab-btn[data-day="${pill.dataset.day}"]`);
+      if (targetDayBtn) {
+        targetDayBtn.click();
+      }
+      // Ensure daily timetable tab is active
+      const dailyNavBtn = document.querySelector(`.editorial-nav .nav-btn[data-tab="tab-daily"]`);
+      if (dailyNavBtn && !dailyNavBtn.classList.contains("active")) {
+        dailyNavBtn.click();
+      }
+      closeSidebar();
+    });
+  });
+
+  if (jumpActiveBtn) {
+    jumpActiveBtn.addEventListener("click", () => {
+      closeSidebar();
+      const jumpBtn = document.getElementById("jumpToCurrentBlockBtn");
+      if (jumpBtn) jumpBtn.click();
     });
   }
 }
