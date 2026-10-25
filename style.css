@@ -340,6 +340,7 @@ body.newspaper-theme {
   margin: 0 auto;
   padding: 16px 24px 0;
   width: 100%;
+  overflow-x: hidden;
 }
 
 .live-wire-bar {
@@ -395,8 +396,8 @@ body.newspaper-theme {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 360px;
-  max-width: 90vw;
+  width: min(360px, 100vw);
+  max-width: 100vw;
   background: var(--bg-paper);
   border-left: 2px solid var(--border-black);
   box-shadow: -6px 0 28px rgba(0, 0, 0, 0.18);
@@ -405,6 +406,7 @@ body.newspaper-theme {
   flex-direction: column;
   transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
 }
 
 .modern-sidebar.open {
@@ -952,7 +954,8 @@ body.newspaper-theme {
 .day-headline-group {
   display: flex;
   align-items: baseline;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 8px 14px;
   border-bottom: 1px solid var(--border-rule);
   padding-bottom: 6px;
   margin-bottom: 8px;
@@ -964,6 +967,7 @@ body.newspaper-theme {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
+  word-break: break-word;
 }
 
 .day-topic-rule {
@@ -972,6 +976,7 @@ body.newspaper-theme {
   text-transform: uppercase;
   color: var(--ink-muted);
   letter-spacing: 0.5px;
+  word-break: break-word;
 }
 
 .day-lead-text {
@@ -1554,110 +1559,104 @@ body.newspaper-theme {
 }
 
 @media (max-width: 768px) {
+  /* ── Page Layout ── */
   .page-container {
-    padding: 12px 14px 40px;
+    padding: 10px 12px 40px;
+    overflow-x: hidden;
   }
-  
-  .masthead {
-    padding: 10px 14px 0;
+
+  /* ── Top Nav Bar ── */
+  .top-nav-inner {
+    padding: 0 12px;
+    height: 48px;
+  }
+
+  .nav-brand-title {
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+
+  .nav-live-clock {
+    display: none; /* hide clock on small screens to prevent crowding */
+  }
+
+  /* ── Masthead Hero ── */
+  .masthead-hero {
+    padding: 10px 12px 0;
+  }
+
+  .masthead-top-line {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding-bottom: 6px;
+    font-size: 0.72rem;
+  }
+
+  .meta-center {
+    display: none; /* hide decorative quote on mobile */
+  }
+
+  .masthead-title-wrap {
+    padding: 10px 0 8px;
   }
 
   .masthead-title {
-    font-size: clamp(1.8rem, 8vw, 2.3rem);
+    font-size: clamp(1.6rem, 7.5vw, 2.2rem);
     letter-spacing: 1px;
   }
 
   .masthead-subtitle {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     line-height: 1.4;
-    padding: 0 4px;
   }
 
-  .masthead-top-line {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding-bottom: 8px;
-  }
-
-  .meta-left {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    font-size: 0.74rem;
-  }
-
-  .meta-center {
-    display: none; /* Hide decorative quote on mobile to preserve vertical space */
-  }
-
-  .meta-right {
-    width: 100%;
-  }
-
-  .search-trigger-wrap {
-    width: 100%;
-  }
-
-  .search-trigger-wrap input {
-    width: 100%;
-    font-size: 0.85rem;
-    padding: 8px 12px;
-  }
-
-  /* Live Wire Banner */
+  /* ── Live Wire Banner ── */
   .live-wire-bar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-    padding: 10px 12px;
+    gap: 5px;
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+
+  .live-wire-content {
+    width: 100%;
+  }
+
+  .live-wire-title {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
   }
 
   .live-wire-bedtime {
     border-left: none;
     padding-left: 0;
-    border-top: 1px solid #333333;
-    padding-top: 6px;
+    border-top: 1px solid #444;
+    padding-top: 5px;
     width: 100%;
   }
 
-  /* Sticky Navigation Bar on Mobile */
-  .sticky-nav-bar {
-    padding: 6px 12px;
+  /* ── Sidebar ── */
+  .modern-sidebar {
+    width: 100vw;
+    max-width: 100vw;
+    border-left: none;
+    border-top: 2px solid var(--border-black);
   }
 
-  .sticky-nav-left {
-    gap: 8px;
+  .sidebar-body {
+    padding: 12px 14px;
   }
 
-  .sidebar-toggle-btn {
-    padding: 8px 12px;
-    font-size: 0.75rem;
+  .nested-day-tag {
+    display: none; /* too cramped on mobile */
   }
 
-  .current-section-display {
-    padding: 4px 6px;
-  }
-
-  .current-section-name {
-    font-size: 0.88rem;
-    max-width: 140px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .current-section-prefix {
-    display: none;
-  }
-
-  .sticky-quick-btn {
-    padding: 6px 8px;
-    font-size: 0.68rem;
-  }
-
-  /* Timetable Day Bar */
+  /* ── Timetable Day Bar ── */
   .day-bar {
     flex-direction: column;
     align-items: stretch;
@@ -1705,7 +1704,33 @@ body.newspaper-theme {
     justify-content: center;
   }
 
-  /* Timeline Cards */
+  /* ── Day Editorial Header ── */
+  .editorial-day-header {
+    padding: 12px 14px;
+  }
+
+  .day-headline-group {
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    align-items: flex-start;
+  }
+
+  .day-main-heading {
+    font-size: clamp(1.5rem, 6vw, 1.9rem);
+    word-break: break-word;
+  }
+
+  .day-topic-rule {
+    font-size: 0.78rem;
+    word-break: break-word;
+  }
+
+  .day-key-anchors {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  /* ── Timeline Cards ── */
   .timeline-row {
     flex-direction: column;
     gap: 8px;
@@ -1728,22 +1753,22 @@ body.newspaper-theme {
     min-height: 22px;
   }
 
-  /* Portions Calculator */
+  /* ── Columns ── */
+  .columns-3 {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── Portions Calculator ── */
   .calc-tally-bar {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
-    padding: 12px 14px;
+    padding: 12px 0 0;
   }
 
-  .calc-tally-numbers {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-  }
-
-  .calc-item-row {
-    padding: 10px 12px;
+  .calc-btn-group {
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .calc-controls {
@@ -1756,30 +1781,57 @@ body.newspaper-theme {
     font-size: 1.1rem;
   }
 
-  /* Day Header */
-  .day-header-card {
-    padding: 14px 16px;
+  /* ── Tables ── */
+  .newspaper-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
   }
 
-  .day-main-heading {
-    font-size: 1.8rem;
+  /* ── Cards ── */
+  .editorial-card {
+    padding: 14px;
   }
 
-  .day-key-anchors {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+  .card-headline {
+    font-size: 1.1rem;
   }
 
-  .columns-3 {
-    grid-template-columns: 1fr;
-  }
-
+  /* ── Forms ── */
   .form-row-3 {
     grid-template-columns: 1fr;
+  }
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── Quick Bar Buttons ── */
+  .day-quick-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .btn-newspaper-sm,
+  .btn-outline-sm {
+    font-size: 0.72rem;
+    padding: 6px 10px;
   }
 }
 
 @media (max-width: 480px) {
+  /* ── Top Nav ── */
+  .nav-brand-sep,
+  .nav-brand-day {
+    display: none;
+  }
+
+  /* ── Masthead ── */
+  .masthead-title {
+    font-size: clamp(1.3rem, 7vw, 1.7rem);
+  }
+
+  /* ── Day Header ── */
   .day-key-anchors {
     grid-template-columns: 1fr;
   }
@@ -1790,6 +1842,39 @@ body.newspaper-theme {
     gap: 2px;
   }
 
+  /* ── Sidebar ── */
+  .sidebar-head {
+    padding: 12px 14px;
+  }
+
+  .sidebar-brand-name {
+    font-size: 1rem;
+  }
+
+  /* ── Macro Banner ── */
+  .macro-banner {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .macro-box {
+    border-right: none;
+    border-bottom: 1px solid var(--border-black);
+  }
+
+  .macro-box:nth-child(odd) {
+    border-right: 1px solid var(--border-black);
+  }
+
+  .macro-num {
+    font-size: 1.4rem;
+  }
+
+  /* ── Career Pillars ── */
+  .columns-4 {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── Footer ── */
   .footer-inner {
     flex-direction: column;
     align-items: flex-start;

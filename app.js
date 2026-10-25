@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const dateEl = document.getElementById("currentDateDisplay");
   if (dateEl) dateEl.textContent = dateStr;
 
-  initNavTabs();
+  initNavTabs(todayName);
   initSidebar(todayName);
   initDayTabs(todayName);
   renderTimeline(currentSelectedDay);
@@ -380,12 +380,32 @@ function switchTab(tabId) {
 }
 
 // --- Sticky Navigation Bar & Plan Actions ---
-function initNavTabs() {
+function initNavTabs(todayName) {
   const brandBtn = document.getElementById("brandHomeBtn");
   if (brandBtn) {
     brandBtn.addEventListener("click", () => {
+      // Always jump back to today's day, not whichever day was last selected
+      currentSelectedDay = todayName;
+      const activeDayIndicator = document.getElementById("activeDayIndicator");
+      if (activeDayIndicator) activeDayIndicator.textContent = todayName.toUpperCase();
+      const sidebarCurrentDaySub = document.getElementById("sidebarCurrentDaySub");
+      if (sidebarCurrentDaySub) {
+        const dayData = scheduleData[todayName];
+        sidebarCurrentDaySub.textContent = dayData ? `${dayData.title} (Today)` : "";
+      }
+      document.querySelectorAll("#sidebarDaysList .nested-day-btn").forEach(b =>
+        b.classList.toggle("active", b.dataset.day === todayName)
+      );
+      renderTimeline(todayName);
       switchTab("tab-daily");
       window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    // Also support keyboard Enter/Space on the brand (it's role=button)
+    brandBtn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        brandBtn.click();
+      }
     });
   }
 
@@ -458,6 +478,21 @@ function initSidebar(todayName) {
     item.addEventListener("click", () => {
       const tabKey = item.dataset.tab;
       if (tabKey) {
+        // If clicking "Today's Timetable" (tab-daily), reset to actual today
+        if (tabKey === "tab-daily") {
+          currentSelectedDay = todayName;
+          const activeDayIndicator = document.getElementById("activeDayIndicator");
+          if (activeDayIndicator) activeDayIndicator.textContent = todayName.toUpperCase();
+          const sidebarCurrentDaySub = document.getElementById("sidebarCurrentDaySub");
+          if (sidebarCurrentDaySub) {
+            const dayData = scheduleData[todayName];
+            sidebarCurrentDaySub.textContent = dayData ? `${dayData.title} (Today)` : "";
+          }
+          document.querySelectorAll("#sidebarDaysList .nested-day-btn").forEach(b =>
+            b.classList.toggle("active", b.dataset.day === todayName)
+          );
+          renderTimeline(todayName);
+        }
         switchTab(tabKey);
         closeSidebar();
       }
