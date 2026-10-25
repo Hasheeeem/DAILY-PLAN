@@ -417,7 +417,7 @@ body.newspaper-theme {
 
 .sidebar-head {
   flex-shrink: 0;
-  padding: 16px 20px;
+  padding: max(16px, env(safe-area-inset-top)) 20px 16px;
   border-bottom: 2px solid var(--border-black);
   display: flex;
   justify-content: space-between;
@@ -643,7 +643,7 @@ body.newspaper-theme {
 
 .sidebar-foot {
   flex-shrink: 0;
-  padding: 14px 18px;
+  padding: 14px 18px max(14px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--border-black);
   background: #ffffff;
   display: flex;
