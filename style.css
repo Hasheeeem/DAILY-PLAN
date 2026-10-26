@@ -669,6 +669,58 @@ body.newspaper-theme {
   background: #333333;
 }
 
+.sidebar-cal-btn {
+  background: #111827;
+  color: #ffffff;
+  border: 1px solid var(--border-black);
+  padding: 8px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.sidebar-cal-btn:hover {
+  background: #000000;
+}
+
+.sidebar-notif-btn {
+  background: transparent;
+  border: 1px solid var(--border-rule);
+  color: var(--ink-black);
+  padding: 7px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.sidebar-notif-btn:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-black);
+}
+
+.sidebar-notif-btn.active,
+.btn-outline-sm.active {
+  background: #0f766e;
+  color: #ffffff !important;
+  border-color: #0f766e !important;
+}
+
 .sidebar-export-btn {
   background: transparent;
   border: 1px solid var(--border-rule);

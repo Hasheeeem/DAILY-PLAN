@@ -337,6 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderPortionCalculator();
   initDailyTracker();
   initGlobalSearch();
+  initNotificationSystem();
   startClockAndTimers();
 
   const dateInput = document.getElementById("trackDate");
@@ -428,6 +429,259 @@ function initNavTabs(todayName) {
       URL.revokeObjectURL(url);
     });
   }
+}
+
+// ========================================================
+// NOTIFICATION & IPHONE CALENDAR SYNC SYSTEM
+// ========================================================
+
+let liveAlertsEnabled = localStorage.getItem("dailyplan_live_alerts") === "true";
+let lastNotifiedBlockTitle = null;
+let audioCtx = null;
+
+function playTaskChime() {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+    const now = audioCtx.currentTime;
+
+    // Apple-inspired elegant dual-tone chime (D5 -> A5)
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(587.33, now); // D5
+    gain1.gain.setValueAtTime(0.18, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+    osc1.connect(gain1);
+    gain1.connect(audioCtx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.7);
+
+    const osc2 = audioCtx.createOscillator();
+    const gain2 = audioCtx.createGain();
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(880, now + 0.12); // A5
+    gain2.gain.setValueAtTime(0.22, now + 0.12);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+    osc2.connect(gain2);
+    gain2.connect(audioCtx.destination);
+    osc2.start(now + 0.12);
+    osc2.stop(now + 1.2);
+  } catch (e) {
+    console.warn("Audio chime error:", e);
+  }
+}
+
+function updateLiveAlertsButtons() {
+  const sidebarBtn = document.getElementById("enableLiveAlertsBtn");
+  const quickBtn = document.getElementById("quickLiveAlertsBtn");
+
+  const label = liveAlertsEnabled ? "🔔 Live In-App Alerts: ON" : "🔔 Live In-App Alerts: OFF";
+  const quickLabel = liveAlertsEnabled ? "🔔 Live Alerts: ON" : "🔔 Live Alerts: OFF";
+
+  if (sidebarBtn) {
+    sidebarBtn.textContent = label;
+    sidebarBtn.classList.toggle("active", liveAlertsEnabled);
+  }
+  if (quickBtn) {
+    quickBtn.textContent = quickLabel;
+    quickBtn.classList.toggle("active", liveAlertsEnabled);
+  }
+}
+
+function triggerTaskNotification(activeBlock) {
+  playTaskChime();
+
+  if ("Notification" in window && Notification.permission === "granted") {
+    try {
+      new Notification(`Now: ${activeBlock.title}`, {
+        body: `${activeBlock.start} – ${activeBlock.end}\n${activeBlock.desc || ""}`,
+        icon: "photo.jpeg"
+      });
+    } catch (e) {
+      console.warn("Notification error:", e);
+    }
+  }
+}
+
+function toggleLiveAlerts() {
+  if (!liveAlertsEnabled) {
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission().then(perm => {
+        liveAlertsEnabled = true;
+        localStorage.setItem("dailyplan_live_alerts", "true");
+        updateLiveAlertsButtons();
+        playTaskChime();
+        if (perm === "granted") {
+          try {
+            new Notification("🔔 Live Alerts Enabled", {
+              body: "You will hear an audio chime and see alerts when each task starts while using the app.",
+              icon: "photo.jpeg"
+            });
+          } catch(e) {}
+        }
+      });
+    } else {
+      liveAlertsEnabled = true;
+      localStorage.setItem("dailyplan_live_alerts", "true");
+      updateLiveAlertsButtons();
+      playTaskChime();
+    }
+  } else {
+    liveAlertsEnabled = false;
+    localStorage.setItem("dailyplan_live_alerts", "false");
+    updateLiveAlertsButtons();
+  }
+}
+
+// Generate Apple Calendar (.ics) with native start alarms for all 7 days
+function generateIcsCalendar() {
+  const dayOffsetMap = { sunday: 0, monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6 };
+  const dayCodeMap = { sunday: "SU", monday: "MO", tuesday: "TU", wednesday: "WE", thursday: "TH", friday: "FR", saturday: "SA" };
+  const baseDay = 25; // 2026-10-25 is Sunday
+
+  let lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//The Daily Plan//Personal Operating System//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "X-WR-CALNAME:The Daily Plan",
+    "X-WR-TIMEZONE:Asia/Kolkata",
+    "BEGIN:VTIMEZONE",
+    "TZID:Asia/Kolkata",
+    "BEGIN:STANDARD",
+    "DTSTART:19700101T000000",
+    "TZOFFSETFROM:+0530",
+    "TZOFFSETTO:+0530",
+    "TZNAME:IST",
+    "END:STANDARD",
+    "END:VTIMEZONE"
+  ];
+
+  Object.keys(scheduleData).forEach(dayKey => {
+    const dayData = scheduleData[dayKey];
+    const offset = dayOffsetMap[dayKey] ?? 0;
+    const byDay = dayCodeMap[dayKey] || "SU";
+    const dateNum = baseDay + offset;
+    const dateStr = `202610${String(dateNum).padStart(2, "0")}`;
+
+    dayData.blocks.forEach((block, idx) => {
+      const [sH, sM] = block.start.split(":").map(s => s.padStart(2, "0"));
+      const [eH, eM] = block.end.split(":").map(s => s.padStart(2, "0"));
+
+      let sTotal = parseInt(sH) * 60 + parseInt(sM);
+      let eTotal = parseInt(eH) * 60 + parseInt(eM);
+
+      let startDateStr = dateStr;
+      let endDateStr = dateStr;
+      if (eTotal < sTotal) {
+        const nextDateNum = dateNum + 1;
+        endDateStr = `202610${String(nextDateNum).padStart(2, "0")}`;
+      }
+
+      const safeTitle = (block.title || "").replace(/[\\;,]/g, " ").trim();
+      const safeDesc = (block.desc || "").replace(/[\\;,]/g, " ").replace(/\r?\n/g, " ").trim();
+      const uid = `dailyplan-${dayKey}-${sH}${sM}-${idx}@dailyplan.app`;
+
+      lines.push("BEGIN:VEVENT");
+      lines.push(`UID:${uid}`);
+      lines.push("DTSTAMP:20261025T000000Z");
+      lines.push(`SUMMARY:${safeTitle}`);
+      lines.push(`DESCRIPTION:${safeDesc}`);
+      lines.push(`LOCATION:The Daily Plan (${dayData.focus || dayData.title})`);
+      lines.push(`DTSTART;TZID=Asia/Kolkata:${startDateStr}T${sH}${sM}00`);
+      lines.push(`DTEND;TZID=Asia/Kolkata:${endDateStr}T${eH}${eM}00`);
+      lines.push(`RRULE:FREQ=WEEKLY;BYDAY=${byDay}`);
+      lines.push("STATUS:CONFIRMED");
+      lines.push("TRANSP:OPAQUE");
+      // Apple Calendar native alarm at exact start time
+      lines.push("BEGIN:VALARM");
+      lines.push("ACTION:DISPLAY");
+      lines.push(`DESCRIPTION:${safeTitle} starting now`);
+      lines.push("TRIGGER:-PT0M");
+      lines.push("END:VALARM");
+      lines.push("END:VEVENT");
+    });
+  });
+
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n");
+}
+
+function downloadIcsCalendar() {
+  const icsContent = generateIcsCalendar();
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "The_Daily_Plan_Schedule.ics";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function showCalendarSyncGuide() {
+  const existing = document.getElementById("calSyncModal");
+  if (existing) existing.remove();
+
+  const modal = document.createElement("div");
+  modal.id = "calSyncModal";
+  modal.className = "search-modal-backdrop";
+  modal.style.display = "flex";
+  modal.innerHTML = `
+    <div class="search-modal-panel" style="max-width: 440px; padding: 22px; font-family: var(--font-sans);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+        <h3 style="margin:0; font-family: var(--font-serif); font-size: 1.25rem;">📅 iPhone Calendar Sync</h3>
+        <button id="closeCalSyncModal" style="background:none; border:none; font-size: 1.3rem; cursor:pointer;">✕</button>
+      </div>
+      <p style="font-size:0.86rem; color:var(--ink-gray); line-height:1.5; margin-bottom: 14px;">
+        This exports your complete 7-day schedule to an <strong>Apple Calendar (.ics)</strong> file with <strong>native lock-screen alerts for every single task</strong>.
+      </p>
+      <div style="background:var(--bg-subtle); padding: 12px 14px; border-left: 3px solid var(--border-black); font-size: 0.82rem; line-height: 1.5; margin-bottom: 18px;">
+        <strong>Steps on your iPhone:</strong><br>
+        1. Tap <strong>"Download & Sync"</strong> below.<br>
+        2. When your iPhone prompts, tap <strong>"Add All"</strong>.<br>
+        3. Your iPhone Lock Screen will now chime/vibrate at the start of each task every day!
+      </div>
+      <div style="display:flex; gap: 10px;">
+        <button id="confirmDownloadIcsBtn" class="btn-newspaper" style="flex:1; justify-content:center;">📥 Download & Sync to iPhone</button>
+        <button id="dismissCalSyncModal" class="btn-outline-sm">Close</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const close = () => modal.remove();
+  document.getElementById("closeCalSyncModal").addEventListener("click", close);
+  document.getElementById("dismissCalSyncModal").addEventListener("click", close);
+  modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+
+  document.getElementById("confirmDownloadIcsBtn").addEventListener("click", () => {
+    downloadIcsCalendar();
+    setTimeout(close, 800);
+  });
+}
+
+function initNotificationSystem() {
+  updateLiveAlertsButtons();
+
+  const addToCalBtn = document.getElementById("addToCalendarBtn");
+  if (addToCalBtn) addToCalBtn.addEventListener("click", showCalendarSyncGuide);
+
+  const quickCalBtn = document.getElementById("quickSyncCalendarBtn");
+  if (quickCalBtn) quickCalBtn.addEventListener("click", showCalendarSyncGuide);
+
+  const enableAlertsBtn = document.getElementById("enableLiveAlertsBtn");
+  if (enableAlertsBtn) enableAlertsBtn.addEventListener("click", toggleLiveAlerts);
+
+  const quickAlertsBtn = document.getElementById("quickLiveAlertsBtn");
+  if (quickAlertsBtn) quickAlertsBtn.addEventListener("click", toggleLiveAlerts);
 }
 
 // --- Off-Canvas Modern Sidebar Drawer (Apple-Inspired & Clean) ---
@@ -733,9 +987,31 @@ function startClockAndTimers() {
     if (activeBlock) {
       if (titleEl) titleEl.textContent = `${activeBlock.title} (${activeBlock.start} – ${activeBlock.end})`;
       if (timerEl) timerEl.textContent = `[${minsUntilNext}m left → Next: ${nextBlock ? nextBlock.title : 'Night wind down'}]`;
+
+      if (lastNotifiedBlockTitle === null) {
+        lastNotifiedBlockTitle = activeBlock.title;
+      } else if (lastNotifiedBlockTitle !== activeBlock.title) {
+        lastNotifiedBlockTitle = activeBlock.title;
+        if (liveAlertsEnabled) {
+          triggerTaskNotification(activeBlock);
+        }
+      }
     } else {
       if (titleEl) titleEl.textContent = "Night Wind Down & Sleep Anchor";
       if (timerEl) timerEl.textContent = "[Lights out 11:00 PM • Wake 5:30 AM]";
+      if (lastNotifiedBlockTitle === null) {
+        lastNotifiedBlockTitle = "sleep-anchor";
+      } else if (lastNotifiedBlockTitle !== "sleep-anchor") {
+        lastNotifiedBlockTitle = "sleep-anchor";
+        if (liveAlertsEnabled) {
+          triggerTaskNotification({
+            title: "Night Wind Down & Sleep Anchor",
+            start: "23:00",
+            end: "05:30",
+            desc: "Dark quiet room. Consistent sleep anchor to protect tomorrow's health."
+          });
+        }
+      }
     }
   }
 

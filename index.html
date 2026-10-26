@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261025-2">
+  <link rel="stylesheet" href="style.css?v=20261026-1">
 </head>
 <body class="newspaper-theme">
 
@@ -194,6 +194,8 @@
 
     <div class="sidebar-foot">
       <button class="sidebar-jump-btn" id="sidebarJumpActiveBtn">⚡ Jump to Active Block</button>
+      <button class="sidebar-cal-btn" id="addToCalendarBtn">📅 Sync to iPhone Calendar (Native Alerts)</button>
+      <button class="sidebar-notif-btn" id="enableLiveAlertsBtn">🔔 Live In-App Alerts: OFF</button>
       <button class="sidebar-export-btn" id="exportFullPlanBtn">Export Plan Data (JSON)</button>
     </div>
   </aside>
@@ -221,6 +223,8 @@
       <!-- Quick Action Controls (Zero Cropping, Fits All Screens) -->
       <div class="day-quick-bar">
         <button class="btn-newspaper-sm" id="jumpToCurrentBlockBtn">⚡ Jump to Active Block</button>
+        <button class="btn-newspaper-sm" id="quickSyncCalendarBtn">📅 Sync iPhone Calendar (.ics)</button>
+        <button class="btn-outline-sm" id="quickLiveAlertsBtn">🔔 Live Alerts: OFF</button>
         <button class="btn-outline-sm" id="resetCheckboxesBtn">Reset Today's Checks</button>
         <button class="btn-outline-sm" id="printDayBtn">Print Page</button>
       </div>
@@ -936,6 +940,6 @@
     </div>
   </footer>
 
-  <script src="app.js?v=20261025-2"></script>
+  <script src="app.js?v=20261026-1"></script>
 </body>
 </html>
