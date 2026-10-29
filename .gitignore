@@ -4,11 +4,10 @@
 # Ignore ALL personal documents, certificates, IDs, and external files in 'me/'
 /*
 
-# Whitelist ONLY the project folder and essential deployment configurations
+# Whitelist ONLY the project folder and root .gitignore
 !/daily-plan/
 !/daily-plan/**
 !/.gitignore
-!/vercel.json
 
 # Common system files
 .DS_Store
