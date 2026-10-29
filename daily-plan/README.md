@@ -24,16 +24,16 @@ An elegant, black-and-white newspaper-themed personal operating system and execu
 ## File Structure
 
 ```text
-├── daily-plan/       # Core project web application
+├── daily-plan/       # Self-contained project directory
 │   ├── index.html    # Semantic broadsheet HTML layout
 │   ├── style.css     # Broadsheet typography, responsive grid, newspaper borders
 │   ├── app.js        # Schedules, Kerala meal calculator, live clock, search, calendar sync
-│   └── photo.jpeg    # Notification badge icon
-├── vercel.json       # Routes root requests to daily-plan folder
-├── open_plan.bat     # One-click Windows desktop launcher
-├── server.py         # Local no-cache Python dev server
-├── .gitignore        # Excludes all private media, credentials, and PDFs
-└── README.md         # Project documentation
+│   ├── open_plan.bat # One-click Windows desktop launcher
+│   ├── server.py     # Local no-cache Python dev server
+│   ├── vercel.json   # Vercel configuration
+│   ├── .gitignore    # Local git ignore
+│   └── README.md     # Project documentation
+└── .gitignore        # Root safeguard for external files
 ```
 
 ---
