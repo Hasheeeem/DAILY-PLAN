@@ -1,25 +1,16 @@
-# Personal & Sensitive Identity Documents
-*.pdf
-*.jpg
-*.jpeg
-*.png
-*.webp
-*.gif
-*.bmp
-*.ico
-*.cer
-*.crt
-*.key
-*.pem
-*.pfx
-*.env
-*.env.*
-*.log
+# ==============================================================================
+# The Daily Plan - Git Ignore Rules
+# ==============================================================================
+# Ignore ALL personal documents, certificates, IDs, and external files in 'me/'
+/*
 
-# OS & Editor Files
+# Whitelist ONLY the project folder and essential deployment configurations
+!/daily-plan/
+!/daily-plan/**
+!/.gitignore
+!/vercel.json
+
+# Common system files
 .DS_Store
 Thumbs.db
 desktop.ini
-.vscode/
-.idea/
-server.py
